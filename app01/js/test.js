@@ -10,16 +10,23 @@ brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set( 4, 4 );
 
 
-
-box.material       = brickMaterial;
-wall1Mesh.material = brickMaterial;
-wall2Mesh.material = brickMaterial;
-floorMesh.material = brickMaterial;
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
+
+
+
+var btn = document.getElementById('btn');
+btn.addEventListener('click', function() {
+    box.material       = brickMaterial;
+    wall1Mesh.material = brickMaterial;
+    wall2Mesh.material = brickMaterial;
+    floorMesh.material = brickMaterial;  
+});
+
+
 
 
 function animate() {

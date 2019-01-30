@@ -3,3 +3,28 @@
 body {
     margin: 0px;
 }
+#container {
+    position: absolute;
+    display: block;
+}
+
+#btn{
+    color: aqua; 
+    border: 2px solid #ccc; 
+    border-radius: 8px;
+    font-size: 40px;
+    user-select: none;
+    cursor: pointer;
+    background-color: rgba(58, 136, 10, 0.5);
+    margin: 5px;
+    float: right;
+}
+
+#btn:hover {
+    background-color: rgba(58, 136, 10, 0.8);  
+}
+
+#btn:active {
+    background-color: rgba(19, 22, 18, 0.8);  
+    color: yellow;
+}
