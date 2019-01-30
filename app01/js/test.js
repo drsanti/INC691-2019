@@ -41,9 +41,11 @@ box.scale.y = 0.2;
 box.scale.z = 0.2;
 box.visible = false;
 
-
+var dir = 1;
 var holder = new THREE.Object3D();
-
+btn.addEventListener('click', function() {
+    dir *= -1;
+});
 
 var boxes = [];
 var POINTS = 50;
@@ -60,7 +62,7 @@ for(var i=0; i< POINTS; i++) {
 
 
 
-var t = 0;
+
 
 scene.add(holder);
 
@@ -72,7 +74,7 @@ function animate() {
     //     b.rotation.x += 0.01;
     //     b.position.y = 2.2 + 2 * Math.sin(t * Math.PI * 4);
     // });
-    holder.rotation.y += 0.01;
+    holder.rotation.y += 0.01 * dir;
 
     boxes[7].rotation.y += 0.1;
 
