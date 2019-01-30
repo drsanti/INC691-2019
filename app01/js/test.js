@@ -1,8 +1,10 @@
 
 import {scene, camera, renderer, box} from './init';
+import * as THREE from 'three';
 
-
-
+var texture = new THREE.TextureLoader().load( 'images/brick.jpg' );
+var material = new THREE.MeshBasicMaterial( { map: texture } );
+console.log(material);
 
 function animate() {
 	requestAnimationFrame( animate );
