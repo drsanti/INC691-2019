@@ -1,11 +1,13 @@
 
 //!! Import Engine used classes
-import { Engine, CANNON, Keyboard } from './libs/ecc-cgp-engine';
+import { Engine, THREE, CANNON, Keyboard } from './libs/ecc-cgp-engine';
 
 //!! Create the engine w/ simple scene
 const engine = new Engine({ 
     sceneType: 'fog',       //!! 'env', 'fog', 'basic'
-    useReflection: false    //!! true, false
+    useReflection: false,    //!! true, false,
+    usePhysics: true,
+    useDebug: true
 });
 
 
@@ -16,12 +18,13 @@ engine.init( {
 }).then((params) => {                       //!! params is an object containing graphics and physics objects
     userInit( params );                     //!! user function used as initialized function
     engine.setGravity(new CANNON.Vec3(0, -9.8, 0)); //!! set gravity vector pointing down (-y)
-    engine.start();                         //!! start the engine
+    engine.start( callback );                         //!! start the engine
 }); 
 
 //!! 
 var body = null;        //!! Target
 var ground = null;       //!! Plane/Ground
+
 
 //!! User initial function
 function userInit( params ) {
@@ -30,20 +33,27 @@ function userInit( params ) {
     body = engine.getBodyByMeshName('Cube');
 
     //!! Plane/Ground
-    ground = engine.getBodyByMeshName('StaticCube');
+    ground = engine.getBodyByMeshName('StaticCubeGround');
     
     //!! Ground Material
-    var groundMat = engine.createGroundMaterial(0.200, 0.5);
+    var groundMat = engine.createGroundMaterial(0.100, 0.5);
     
     //!! Target object material
-    var objectMat = engine.createObjectMaterial(0.001, 0.0, groundMat);
+    var objectMat = engine.createObjectMaterial(0.001, 0.5, groundMat);
 
     //!
     ground.material = groundMat;    /* Apply ground material 		*/
     body.material = objectMat;      /* Apply object material 		*/
     
-    body.mass = 1;			        /* Change mass of the object	*/
+    body.mass = 0.2;			        /* Change mass of the object	*/
     
+
+    engine.on('keydown', function(e){
+        
+        if(e.key == 'f') {
+            applyForce(1, 0, 0); 
+        }
+    });
 }
 
 
@@ -53,18 +63,21 @@ function applyForce(dirx, diry, dirz) {
     //!! Create a world point vector
     const worldPoint = new CANNON.Vec3(0, 0, 0);
 
-    const fx = 200;     //!! Right-Left
-    const fy = 0;       //!! Jump (+y)
-    const fz = 0;       //!! Forward-Backward
+    const fx = 10;     //!! Right-Left
+    const fy = 200;       //!! Jump (+y)
+    const fz = 10;       //!! Forward-Backward
 
     //!! Create force vector
     const force = new CANNON.Vec3(dirx*fx, diry*fy, dirz*fz);
 
     //!! Apply the force to a point, pointed by the worldPoint vector
-    body.applyForce(force, worldPoint);
+    body.applyLocalForce(force, worldPoint);
 }
 
 //!!
 function callback(args) {
     //!!
+    if(container) {
+        container.rotation.x += 0.1;
+    }
 }
