@@ -1,8 +1,7 @@
 export default {
-    input: 'src/cg-scene.js',
+    input: 'src/ecc-cgp-engine.js',
     output: {
-        file: 'src/build/ecc-cg-scene.merged.js',
-        name: 'ecc-cg-scene',
-        format: 'esm'
-      }
-  };
+        file: 'src/build/ecc-cgp-engine.merged.js',
+        format: 'cjs'
+    }
+};

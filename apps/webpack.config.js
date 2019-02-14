@@ -1,13 +1,16 @@
 const path = require('path');
+
+const _mode = 'app';
+
 module.exports = {
-  entry: './ex-01/usr/index.js',
+  entry: (_mode === 'app') ? './ex-02/src/index.js' : './src/index.js',
   mode: 'development',
   output: {
-    path: path.resolve(__dirname, 'ex-01/public'),
+    path: path.resolve(__dirname, 'ex-02/public'),
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, 'ex-01/public'),
+    contentBase: path.join(__dirname, 'ex-02/public'),
     compress: true,
     port: 9000
   },

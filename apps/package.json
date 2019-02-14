@@ -1,32 +1,32 @@
 {
-  "name": "ecc-cg-scene",
-  "version": "1.0.1",
+  "name": "ecc-cgp-engine",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
     "webpack": "webpack --watch --mode development --inline --colors --progress --display-error-details --display-cached",
-    "server": "webpack-dev-server --hot --inline",
+    "start": "webpack-dev-server --hot --inline",
     "build": "webpack --mode production --inline --colors --progress --display-error-details --display-cached",
     "rollup": "rollup -c",
-    "terser": "terser src/build/ecc-cg-scene.merged.js -o ex-01/usr/lib/ecc-cg-scene.js -c -m"
+    "terser": "terser src/build/ecc-cgp-engine.merged.js -o apps/src/libs/ecc-cgp-engine.js -c -m --comment"
   },
   "keywords": [],
   "author": "dr.santi nuratch",
   "license": "ISC",
   "devDependencies": {
+    "rollup": "^1.1.2",
+    "rollup-plugin-babel": "^4.3.2",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "babel-loader": "^8.0.4",
-    "cannon": "^0.6.2",
     "css-loader": "^2.1.0",
-    "rollup": "^1.1.2",
-    "rollup-plugin-babel": "^4.3.2",
     "style-loader": "^0.23.1",
+    "webpack": "^4.28.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14",
     "three": "^0.99.0",
     "three-gltf-loader": "^1.99.1",
     "threejs-orbit-controls": "^1.0.3",
-    "webpack": "^4.28.0",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.14"
+    "cannon": "^0.6.2"
   }
 }
