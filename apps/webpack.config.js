@@ -1,18 +1,30 @@
 const path = require('path');
 
+//!! Mode 'dev' or 'app'
 const _mode = 'app';
 
+const config = {
+  app: {
+    root: 'apps',
+    main: 'index.js'
+  },
+  dev: {
+    main: 'index.js'
+  }
+}
+
 module.exports = {
-  entry: (_mode === 'app') ? './ex-02/src/index.js' : './src/index.js',
+  entry: (_mode === 'app') ? './' + config.app.root + '/src/' + config.app.main  :  './src/' + config.dev.main,
   mode: 'development',
+  //watch: true,
   output: {
-    path: path.resolve(__dirname, 'ex-02/public'),
+    path: path.resolve(__dirname, config.app.root + '/public'),
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, 'ex-02/public'),
+    contentBase: path.join(__dirname, config.app.root + '/public'),
     compress: true,
-    port: 9000
+    port: 9000,
   },
   module: {
     rules: [

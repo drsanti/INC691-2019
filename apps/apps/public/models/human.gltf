@@ -1,0 +1,116 @@
+{
+    "asset" : {
+        "generator" : "Khronos Blender glTF 2.0 I/O",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "SuzanneCone",
+            "rotation" : [
+                0,
+                0,
+                -1,
+                -1.6292068494294654e-07
+            ],
+            "scale" : [
+                0.7611084580421448,
+                0.7611084580421448,
+                0.7611084580421448
+            ],
+            "translation" : [
+                0,
+                3.322697401046753,
+                0
+            ]
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Suzanne",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 1968,
+            "max" : [
+                1.7215330600738525,
+                1.3933398723602295,
+                0.9876176714897156
+            ],
+            "min" : [
+                -1.7215330600738525,
+                -1.0856677293777466,
+                -1.1569204330444336
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 1968,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 1968,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 2904,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 23616,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 23616,
+            "byteOffset" : 23616
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 15744,
+            "byteOffset" : 47232
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5808,
+            "byteOffset" : 62976
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 68784,
+            "uri" : "human.bin"
+        }
+    ]
+}

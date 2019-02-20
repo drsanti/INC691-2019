@@ -1,7 +1,7 @@
 export default {
-    input: 'src/ecc-cgp-engine.js',
+    input: 'src/ECC-CGP-Engine.js',
     output: {
-        file: 'src/build/ecc-cgp-engine.merged.js',
+        file: 'src/build/ECC-CGP-Engine.all.js',
         format: 'cjs'
     }
 };
