@@ -1,8 +1,6 @@
-//!! example3--Force
 
+import { Engine, CANNON } from './libs/ECC-CGP-Engine';
 
-//!! Import the libraries
-import { Engine, CANNON } from 'ecc-cgp-engine';
 
 //!! Create the engine
 const engine = new Engine();
@@ -12,7 +10,7 @@ const engine = new Engine();
 const initOpts = {
     envPath: 'images/Bridge2',
     models:[
-        'models/scene.gltf',
+        'models/cube_ground.gltf',
     ],
 }
 
@@ -38,7 +36,10 @@ function userInit() {
     target = rigidBody;
 
     //
-    target.allowSpeep = false;
+    target.allowSleep = false;
+
+
+    engine.graphics.meshUtils.addAxesToAllMeshes(4);
 }
 
 
@@ -47,34 +48,32 @@ function loop() {
 
     if(!target) return;
 
-    if( engine.keyboard.getKeyDown( 'f', 500 ) ) {
-
-        //!! Force location (the center)
-        const worldPoint = new CANNON.Vec3( 0, 0, 0 );
-
-        //!! Force
-        const force = 500;
-        var forceVector = new CANNON.Vec3( 0, force, 0 );
-
-        //!! Apply the forceVector to the worldPoint
-        target.applyForce( forceVector, worldPoint );
+    const KEY_DELAY = 500;
+    if( engine.keyboard.getKeyDown( 'w', KEY_DELAY ) ) {
+        addForce( new CANNON.Vec3( 0, 0, +1 ) );   
     }
-
-    if( engine.keyboard.getKeyDown( 'g' ) ) {
-
-        //!! Force location (the center of the target)
-        const targetPoint = new CANNON.Vec3( 0, 0, 0 );
-        targetPoint.clone( target.position );
-        console.log(target.position);
-
-        //!! Force
-        const force = 50;
-        var forceVector = new CANNON.Vec3( 0, force, 0 );
-
-        //!! Apply the forceVector to the worldPoint
-        target.applyForce( forceVector, targetPoint );
+    if( engine.keyboard.getKeyDown( 's', KEY_DELAY ) ) {
+        addForce( new CANNON.Vec3( 0, 0, -1 ) );
     }
-    
+    if( engine.keyboard.getKeyDown( 'd', KEY_DELAY ) ) {
+        addForce( new CANNON.Vec3( +1, 0, 0 ) );
+    }
+    if( engine.keyboard.getKeyDown( 'a', KEY_DELAY ) ) {
+        addForce( new CANNON.Vec3( -1, 0, 0 ) );
+    }
+    if( engine.keyboard.getKeyDown( ' ', KEY_DELAY ) ) {
+        addForce( new CANNON.Vec3( 0, +1, 0 ) );
+    }
 }
+
+const FORCE = 500;
+function addForce(direction) {
+    const point = new CANNON.Vec3( 0, 0, 0 );
+    point.copy(target.position);
+    point.y -= 0.9;
+    const forceVector = direction.mult (FORCE);
+    target.applyLocalForce( forceVector, point );
+}
+
 
 
