@@ -2,7 +2,7 @@
 
 //!!
 
-const _ROOT_ = './src/example2--rigid-body';
+const _ROOT_ = './src/example3--Force';
 
 //!!
 

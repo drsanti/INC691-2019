@@ -1,3 +1,5 @@
+//!! example3--Force
+
 
 //!! Import the libraries
 import { Engine, CANNON } from 'ecc-cgp-engine';
@@ -38,16 +40,24 @@ function userInit() {
 
 
 
-//!! Angle
-var angle = 0.0;
-
 //!! Animation loop
 function loop() {
 
-    if( target ) {
-        target.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), angle);
-        angle += Math.PI/100;
+    if(!target) return;
+
+    if( engine.keyboard.getKeyDown( 'f' ) ) {
+
+        //!! Force location (the center)
+        const worldPoint = new CANNON.Vec3( 0, 0, 0 );
+
+        //!! Force
+        const force = 100;
+        var forceVector = new CANNON.Vec3( force, 0, 0 );
+
+        //!! Apply the forceVector to the worldPoint
+        target.applyForce( forceVector, worldPoint );
     }
+    
 }
 
 
