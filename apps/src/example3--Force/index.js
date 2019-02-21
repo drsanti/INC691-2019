@@ -39,9 +39,7 @@ function userInit() {
 
     //
     target.allowSpeep = false;
-    //engine.physics.world.allowSpeep = false;
 }
-
 
 
 //!! Animation loop
@@ -49,7 +47,7 @@ function loop() {
 
     if(!target) return;
 
-    if( engine.keyboard.getKeyDown( 'f' ) ) {
+    if( engine.keyboard.getKeyDown( 'f', 500 ) ) {
 
         //!! Force location (the center)
         const worldPoint = new CANNON.Vec3( 0, 0, 0 );
@@ -66,7 +64,8 @@ function loop() {
 
         //!! Force location (the center of the target)
         const targetPoint = new CANNON.Vec3( 0, 0, 0 );
-        targetPoint.clone(target.position);
+        targetPoint.clone( target.position );
+        console.log(target.position);
 
         //!! Force
         const force = 50;
