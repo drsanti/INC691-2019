@@ -1,28 +1,24 @@
+
+
+//!!
+
+const _ROOT_ = './src/example01--using-engine';
+
+//!!
+
+
+const _MAIN_ = 'index.js';
+
 const path = require('path');
-
-//!! Mode 'dev' or 'app'
-const _mode = 'app';
-
-const config = {
-  app: {
-    root: 'apps',
-    main: 'index.js'
-  },
-  dev: {
-    main: 'index.js'
-  }
-}
-
 module.exports = {
-  entry: (_mode === 'app') ? './' + config.app.root + '/src/' + config.app.main  :  './src/' + config.dev.main,
+  entry: _ROOT_ + '/' + _MAIN_,
   mode: 'development',
-  //watch: true,
   output: {
-    path: path.resolve(__dirname, config.app.root + '/public'),
+    path: path.resolve(__dirname, '/public'),
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, config.app.root + '/public'),
+    contentBase: path.join(__dirname, '/public'),
     compress: true,
     port: 9000,
   },
