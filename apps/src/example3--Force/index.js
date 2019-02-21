@@ -1,5 +1,7 @@
 
-import { Engine, CANNON } from './libs/ECC-CGP-Engine';
+//!! EX3
+
+import { Engine, CANNON } from 'ecc-cgp-engine';
 
 
 //!! Create the engine
@@ -27,7 +29,7 @@ engine.init(initOpts).then( (args) => {
 function userInit() {
 
     //!! Target name, the mesh name
-    const meshName = 'Cube';
+    const meshName = 'Sphere';
 
     //!! Get the rigid body ftom the physics world
     const rigidBody = engine.physics.bodyUtils.getBodyByMeshName( meshName );
@@ -66,13 +68,13 @@ function loop() {
     }
 }
 
-const FORCE = 500;
+const FORCE = 200;
 function addForce(direction) {
     const point = new CANNON.Vec3( 0, 0, 0 );
     point.copy(target.position);
-    point.y -= 0.9;
+    point.y += 0.5;
     const forceVector = direction.mult (FORCE);
-    target.applyLocalForce( forceVector, point );
+    target.applyForce( forceVector, point );
 }
 
 
