@@ -16,11 +16,13 @@ const initOpts = {
 
 //!! Initialse the ening
 engine.init(initOpts, function( args ){
-    //!! Check the mesh name(s)
-    console.log(args.graphics.scene);
-
+    //!! Check the target mesh name in the console window
 
     const meshName = 'Cube';
+
+    var rigidBody = engine.physics.bodyUtils.getBodyByMeshName( meshName );
+
+    console(rigidBody);
 
     engine.start(); 
 });
