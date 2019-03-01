@@ -14,7 +14,7 @@ const __exdir__  = 'ex11-physics-materials';
 
 //!!
 //!!
-const __mode__   = 'app';
+const __mode__   = 'dev';
 //!!
 //!!
 

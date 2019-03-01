@@ -307,7 +307,7 @@ export default class Engine {
      * Apply reflection map to all meshes
      */
     applyReflectionMapToAllMeshes() {
-        return engine.core.graphics.meshUtils.applyReflectionMapToAllMeshes();
+        return this.core.graphics.meshUtils.applyReflectionMapToAllMeshes();
     }
 
 
