@@ -9,9 +9,7 @@
 
 import Engine from '../libs/ECC-CGP-Engine';
 
-//!!
-//!! Example-11: Physics Materials
-//!!
+//!! Create the engine
 const engine = new Engine({
     physics:{
         enabled:  true,     //!! Enable the physics engine
@@ -39,8 +37,6 @@ engine.init( initOpts ).then( ( params ) => {
     uerInit( params )
     engine.start( callback );               //!! Start and provide the callback function
 });
-
-
 
 const GROUND_MESH_NAME = 'CubeStaticGround';    //!! Ground mesh name exported from the Blender   
 const TARGET_MESH_NAME = 'Sphere001';           //!! Target mesh name exported from Blender   

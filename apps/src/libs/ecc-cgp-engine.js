@@ -1,20 +1,20 @@
+/*
+**************************************************************************************
+* ECC-CGP-Engine.js
+* Computer-based Graphics and Physics Engine
+* This is the wrapped version of the EngineCore
+*
+* Dr.Santi Nuratch
+* Embedded System Computing and Control Laboratory
+* ECC-Lab | INC@KMUTT
+*
+* 03 March, 2019
+***************************************************************************************
+*/
 
-/**
- * ECC-CGP-Engine.js
- * 
- * Computer-based Graphics and Physics Engine
- * This is the wrapped version of the EngineCore
- * 
- * Dr.Santi Nuratch
- * Embedded Computing and Control Laboratory | ECC-Lab@KMUTT
- * 
- * 28 February 2019
- */
+import { EngineCore, CANNON, THREE, Utils } from './EngineCore';
 
-import { EngineCore, CANNON, THREE, Utils }         from './EngineCore';
-import { Graphics, Physics, RayCast, Keyboard }     from './EngineCore';
-import { ActorLoader, Options }                     from './EngineCore';
-
+export { Engine, EngineCore, CANNON, THREE, Utils };
 
 
 export default class Engine {
@@ -248,15 +248,23 @@ export default class Engine {
      * @return THREE.Mesh
      */
     getMeshByName( name ) {
-        return this.core.graphics.meshUtils.getMeshByName( name );
+        return this.core.graphics.getMeshByName( name );
     }
 
-     /**
-     * Returns all meshes in the current scene
+    /**
+     * Returns meshes (excludes helpers, lights and debuggers) in the current scene
      * @return array of THREE.Mesh
      */
     getAllMeshes() {
-        return this.core.graphics.meshUtils.getAllMeshes( name );
+        return this.core.graphics.getMeshes();
+    }
+
+    /**
+     * Returns meshes (excludes helpers, lights and debuggers) in the current scene
+     * @return array of THREE.Mesh
+     */
+    getMeshes() {
+        return this.core.graphics.getMeshes();
     }
 
     /**
@@ -265,7 +273,7 @@ export default class Engine {
      * @return array of THREE.Mesh
      */
     getMeshesFromScene( scene ) {
-        return this.core.graphics.meshUtils.getMeshesFromScene( scene ); 
+        return this.core.graphics.getMeshesFromScene( scene ); 
     }
 
 
@@ -275,7 +283,7 @@ export default class Engine {
      * @param {number} size Axes size
      */
     addAxesToMesh( mesh, size ) {
-        return this.core.graphics.meshUtils.addAxesToMesh( mesh, size );
+        return this.core.graphics.addAxesToMesh( mesh, size );
     }
 
 
@@ -284,7 +292,7 @@ export default class Engine {
      * @param {THREE.Mesh} mesh THREE Mesh
      */
     removeAxesFromMesh( mesh ) {
-        return this.core.graphics.meshUtils.removeAxesFromMesh( mesh );
+        return this.core.graphics.removeAxesFromMesh( mesh );
     }
 
 
@@ -293,24 +301,29 @@ export default class Engine {
      * @param {number} size Axes size
      */
     addAxesToAllMeshes( size ) {
-        return this.core.graphics.meshUtils.addAxesToAllMeshes( size );
+        return this.core.graphics.addAxesToAllMeshes( size );
     }
 
     /**
      * Removes axes from all meshes in the currentt scene
      */
     removeAxesFromAllMeshes( ) {
-        return this.core.graphics.meshUtils.removeAxesFromAllMeshes();
+        return this.core.graphics.removeAxesFromAllMeshes();
     }
 
     /**
      * Apply reflection map to all meshes
      */
     applyReflectionMapToAllMeshes() {
-        return this.core.graphics.meshUtils.applyReflectionMapToAllMeshes();
+        return this.core.graphics.applyReflectionMap( undefined );
     }
 
-
+    /**
+     * Remove reflection map from all meshes
+     */
+    removeReflectionMapFromAllMeshes() {
+        return this.core.graphics.removeReflectionMap( undefined );
+    }
 
     /**********************************************************************************************************/
     /*        Body Utility      Body Utility       Body Utility       Body Utility       Body Utility         */
@@ -322,7 +335,7 @@ export default class Engine {
      * @return CANNON.Body
      */
     getBodyByMeshName( name ) {
-        return this.core.physics.bodyUtils.getBodyByMeshName( name );
+        return this.core.physics.getBodyByMeshName( name );
     }
 
 
@@ -334,13 +347,12 @@ export default class Engine {
         return this.core.physics.world.bodies;
     }
 
-
     /**
-     * Returns all meshes (array of mesh) in the current world
-     * @return array of THREE.Mesh
+     * Returns all rigid bodies (array of bodies) in the current world
+     * @return array of CANNON.Body
      */
-    getMeshesFromWorld() {
-        return this.core.physics.bodyUtils.getMeshesFromWorld();
+    getBodies() {
+        return this.core.physics.world.bodies;
     }
 
 
@@ -349,7 +361,7 @@ export default class Engine {
      * @param {CANNON.Body} body 
      */
     setBodyToStatic( body ) {
-        return this.core.physics.bodyUtils.changeBodyToStatic( body );
+        return this.core.physics.changeBodyToStatic( body );
     }
 
 
@@ -358,30 +370,9 @@ export default class Engine {
      * @param {CANNON.Body} body 
      */
     setBodyToDynamic( body, mass ) {
-        return this.core.physics.bodyUtils.changeBodyToStatic( body, mass );
+        return this.core.physics.changeBodyToDynamic( body, mass );
     }
 
-    /**
-     * Set mass of the rigid-body. If the mass is zero, the rigid-body will be changed to static rigid-body
-     * @param {THREE.Body} body target rigid-bosy
-     * @param {number} mass     mass mass of the rigid-body
-     * @return CANNON.Body
-     */
-    setBodyMass( body, mass ) {
-        return this.core.physics.bodyUtils.changeMassOfBody( body, mass );
-    }
-
-    /**
-     * Returns mass of the mesh. The mass is calculated from the dimension of the mesh
-     * @param {THREE.Mesh} mesh target mesh
-     * @return CANNON.Body
-     */
-    getMassFromMesh( mesh ) {
-        const name = mesh.name.toLowerCase();
-        if( name.includes( 'static' ) || name.includes( 'ground' ) )
-            return 0;
-        return ( mesh.scale.x + mesh.scale.y + mesh.scale.z )/3;   
-    }
 
 
     /**********************************************************************************************************/
@@ -606,7 +597,7 @@ export default class Engine {
 
 
     /**********************************************************************************************************/
-    /*       Camera       Camera        Camera        Camera        Camera        Camera        Camera        */
+    /*         Graphics       Graphics        Graphics        Graphics        Graphics        Graphics        */
     /**********************************************************************************************************/
 
     /**
@@ -617,17 +608,20 @@ export default class Engine {
         return this.core.graphics.camera;
     }
 
-
-    /**********************************************************************************************************/
-    /* Controls       Controls        Controls        Controls        Controls        Controls       Controls */
-    /**********************************************************************************************************/
+    /**
+     * Returns the current scene object
+     * @return THREE.Scene
+     */
+    getScene() {
+        return this.core.graphics.scene;
+    }
     
     /**
      * Returns current used controls
      * @return THREE.Controls
      */
     getControls() {
-        return this.core.graphics.controls;
+        return this.core.graphics.control;
     }
 
     /**
@@ -635,8 +629,8 @@ export default class Engine {
      * @return THREE.Controls
      */
     setControlsEnabled( enabled ) {
-        this.core.graphics.controls.enabled = enabled;   
-        return this.core.graphics.controls;
+        this.core.graphics.control.enabled = enabled;   
+        return this.core.graphics.control;
     }
 
      /**
@@ -644,8 +638,8 @@ export default class Engine {
      * @return THREE.Controls
      */
     setControlsDamping( damping ) {
-        this.core.graphics.controls.damping = damping;
-        return this.core.graphics.controls;
+        this.core.graphics.control.damping = damping;
+        return this.core.graphic.control;
     }
     
 
@@ -655,7 +649,7 @@ export default class Engine {
 
     /**
      * Returns array of ambient lights lights
-     * @return THREE.AmbientLight
+     * @return Array of THREE.AmbientLight
      */
     getAmbientLights() {
         return this.core.graphics.ambientLights;
@@ -663,7 +657,7 @@ export default class Engine {
 
     /**
      * Returns array of point lights
-     * @return THREE.PointLight
+     * @return Array of THREE.PointLight
      */
     getPointLights() {
         return this.core.graphics.pointLights;
@@ -671,7 +665,7 @@ export default class Engine {
 
     /**
      * Returns array of spot lights
-     * @return THREE.SpotLight
+     * @return Array of THREE.SpotLight
      */
     getSpotLights() {
         return this.core.graphics.spotLights;
@@ -679,7 +673,7 @@ export default class Engine {
 
      /**
      * Returns array of directional lights
-     * @return THREE.DirectionalLight
+     * @return Array of THREE.DirectionalLight
      */
     getDirectionalLights() {
         return this.core.graphics.directionalLights;
@@ -789,8 +783,8 @@ export default class Engine {
      * @param {string}     label label/text to be displayed on the mesh
      * @return CSS2DObject label
      */
-    addMeshLabel( mesh, label ) {
-        return this.core.graphics.labelRenderer.addMeshLabel( mesh, label );
+    addLabel( mesh, label ) {
+        return this.core.labelRenderer.addLabel( mesh, label );
     }
 
     /**
@@ -799,8 +793,8 @@ export default class Engine {
      * @param {string} className css class name
      * @return CSS2DObject label
      */
-    setMeshLabelClass( mesh, className ) {
-        return this.core.graphics.labelRenderer.setMeshLabelClass( mesh, className );
+    setLabelClass( mesh, className ) {
+        return this.core.labelRenderer.setLabelClass( mesh, className );
     }
 
     /**
@@ -809,8 +803,8 @@ export default class Engine {
      * @param {string} className css class name
      * @return CSS2DObject label
      */
-    addMeshLabelClass( mesh, className ) {
-        return this.core.graphics.labelRenderer.addMeshLabelClass( mesh, className );
+    addLabelClass( mesh, className ) {
+        return this.core.labelRenderer.addLabelClass( mesh, className );
     }
 
     /**
@@ -818,8 +812,8 @@ export default class Engine {
      * @param {THREE.Mesh} mesh target mesh
      * @return CSS2DObject label
      */
-    getMeshLabel( mesh ) {
-        return this.core.graphics.labelRenderer.getMeshLabel( mesh );
+    getLabel( mesh ) {
+        return this.core.labelRenderer.getLabel( mesh );
     }
 
     /**
@@ -828,8 +822,8 @@ export default class Engine {
      * @param {string}     label label/text to be displayed on the mesh
      * @return CSS2DObject label
      */
-    updateMeshLabel( mesh, label ) {
-        return this.core.graphics.labelRenderer.updateMeshLabel( mesh, label );
+    updateLabel( mesh, label ) {
+        return this.core.labelRenderer.updateLabel( mesh, label );
     }
 
     /**
@@ -838,32 +832,54 @@ export default class Engine {
      * @param {THREE.Vector3} position label position
      * @return CSS2DObject label
      */
-    setMeshLabelPosition(mesh, position) {
-        return this.core.graphics.labelRenderer.setMeshLabelPosition( mesh, position );
+    setLabelPosition(mesh, position) {
+        return this.core.labelRenderer.setLabelPosition( mesh, position );
     }
 
     /**
      * Add labels to meshes in the current scene
      * @return THREE.Mesh[ ]
      */
-    addMeshLabelToMeshes() {
-        return this.core.graphics.labelRenderer.addMeshLabelToMeshes( );
+    addLabelToObjects() {
+        return this.core.labelRenderer.addLabelToObjects( );
     }
 
     /**
      * Removes all labels from meshes in the current scene
      * @return THREE.Mesh[ ]
      */
-    removeMeshLabel( mesh ) {
-        return this.core.graphics.labelRenderer.removeMeshLabel( mesh );   
+    removeLabel( mesh ) {
+        return this.core.labelRenderer.removeLabel( mesh );   
     }
 
     /**
      * Removes all labels from meshes in the current scene
      * @return THREE.Mesh[ ]
      */
-    removeMeshLabelFromMeshes() {
-        return this.core.graphics.labelRenderer.removeMeshLabelFromMeshes();   
+    removeLabelFromObjects() {
+        return this.core.labelRenderer.removeLabelFromObjects();   
+    }
+
+    /**
+     * Show labels
+     */
+    showLabels() {
+        return this.core.labelRenderer.show();
+    }
+    
+    
+    /**
+     * Hide labels
+     */
+    hideLabels() {
+        return this.core.labelRenderer.hide();
+    }
+
+    /**
+     * Toggle labels visibility
+     */
+    toggleLabels() {
+        return this.core.labelRenderer.toggle();
     }
 
     /**********************************************************************************************************/
@@ -877,6 +893,106 @@ export default class Engine {
      * @return Promise
      */
     loadAssets( model, callback ) {
-        this.core.assetLoader.load( model, callback);
+        this.core.assetLoader.load( model, callback );
+    }
+
+    /**
+     * Loads models, adds to scene, creates rigid-body and applies reflection-map
+     * @param {string} model file name
+     * @param {*} callback callback function
+     * @return Promise
+     */
+    loadModel( model, callback ) {
+
+        return new Promise( (resolve, reject) => {
+
+            //!! 1) Load model
+            this.core.graphics.loadGLTF(model).then( (gltf) => {
+
+                //!! 2) Add all objects to scene
+                this.core.graphics.scene.add( gltf.scene );
+
+                //!! 3) Create rigid-bodies
+                this.core.physics.createBodiesFromScene( gltf.scene );
+
+                //!! 4) Apply reflection map to all meshes
+                if( this.core.graphics.options.useReflection ) {
+                    this.core.graphics.applyReflectionMap( gltf.scene );
+                }
+                
+                //!! 5) Resolve
+                resolve(gltf);
+
+                //!! Callback
+                if( callback ) {
+                   callback(gltf); 
+                }
+            });  
+        });
+    }
+
+    /**
+     * Show body-debugger
+     */
+    showDebug() {
+        return this.core.physics.bodyDebug.show();  
+    }
+
+    /**
+     * Hide body-debugger
+     */
+    hideDebug() {
+        return this.core.physics.bodyDebug.hide();  
+    }
+
+    /**
+     * Toggle body-debugger visibility
+     */
+    toggleDebug() {
+        return this.core.physics.bodyDebug.toggle();  
+    }
+
+    /**
+     * Show grids helper
+     */
+    showGrids() {
+        this.core.graphics.addGrids();
+    }
+
+    /**
+     * Hide grids helper
+     */
+    hideGrids() {
+        this.core.graphics.removeGrids();
+    }
+
+    /**
+     * Toggle grids visibility
+     */
+    toggleGrids() {
+        this.core.graphics.toggleGrids();
+    }
+
+
+    /**
+     * Show axes helper
+     */
+    showAxes() {
+        this.core.graphics.addAxes();
+    }
+
+    
+    /**
+     * Hide axes helper
+     */
+    hideAxes() {
+        this.core.graphics.removeAxes();
+    }
+
+    /**
+     * Toggle axes visibility
+     */
+    toggleAxes() {
+        this.core.graphics.toggleAxes();
     }
 }
