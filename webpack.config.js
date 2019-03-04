@@ -12,11 +12,14 @@
 // const __exdir__  = 'ex11-physics-materials';
 // const __exdir__  = 'ex12-show-hide-debug-labels';
 // const __exdir__  = 'ex13-raycast-force-impulse';
-const __exdir__  = 'ex14-models-assets-loading';
+// const __exdir__  = 'ex14-models-assets-loading';
+
+const __exdir__  = 'ex15-distance-constraint';
+
 
 //!!
 //!!
-const __mode__   = 'app';
+const __mode__   = 'dev';
 //!!
 //!!
 
