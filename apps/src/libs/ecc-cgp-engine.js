@@ -283,16 +283,33 @@ export default class Engine {
      * @param {number} size Axes size
      */
     addAxesToMesh( mesh, size ) {
-        return this.core.graphics.addAxesToMesh( mesh, size );
+        this.core.graphics.addAxesToMesh( mesh, size );
+    }
+
+    /**
+     * Adds axes to the spefied body
+     * @param {CANNON.Body} body CANNON Body
+     * @param {number} size Axes size
+     */
+    addAxesToBody( body, size ) {
+        this.core.graphics.addAxesToMesh( body.threemesh, size );   
     }
 
 
     /**
-     * Removes axes to the spefied mesh
+     * Removes axes from the spefied mesh
      * @param {THREE.Mesh} mesh THREE Mesh
      */
     removeAxesFromMesh( mesh ) {
-        return this.core.graphics.removeAxesFromMesh( mesh );
+        this.core.graphics.removeAxesFromMesh( mesh );
+    }
+
+    /**
+     * Removes axes from the spefied body
+     * @param {CANNON.Body} mesh TCANNON Body
+     */
+    removeAxesFromBody( mesh ) {
+        this.core.graphics.removeAxesFromMesh( mesh.threemesh );
     }
 
 
@@ -301,7 +318,18 @@ export default class Engine {
      * @param {number} size Axes size
      */
     addAxesToAllMeshes( size ) {
-        return this.core.graphics.addAxesToAllMeshes( size );
+        this.core.graphics.addAxesToAllMeshes( size );
+    }
+
+    /**
+     * Adds axes to all bodies in the currentt scene
+     * @param {number} size Axes size
+     */
+    addAxesToAllBodies( size ) {
+        var bodies = this.getBodies();
+        bodies.forEach(body => {
+            this.addAxesToBody( body );
+        });
     }
 
     /**
@@ -309,6 +337,16 @@ export default class Engine {
      */
     removeAxesFromAllMeshes( ) {
         return this.core.graphics.removeAxesFromAllMeshes();
+    }
+
+    /**
+     * Removes axes from all bodies in the currentt scene
+     */
+    removeAxesFromAllBodies( size ) {
+        var bodies = this.getBodies();
+        bodies.forEach(body => {
+            this.removeAxesFromBody( body );
+        });
     }
 
     /**
@@ -995,4 +1033,52 @@ export default class Engine {
     toggleAxes() {
         this.core.graphics.toggleAxes();
     }
+
+
+   
+    /**
+     * Returns graphics object
+     */
+    getGraphics() {
+        return this.core.graphics; 
+    }
+
+    /**
+     * Returns graphics scene, the main scene
+     */
+    getScene() {
+        return this.core.graphics.scene;
+    }
+
+     /**
+     * Returns physics world
+     */
+    getWorld() {
+        return this.core.physics.world;
+    }
+
+    /**
+     * Returns physics object
+     */
+    getPhysics() {
+        return this.core.physics; 
+    }
+
+    /**
+     * Adds constraint to physics world
+     * @param {Constraint} constraint 
+     */
+    addConstraint( constraint ) {
+        this.core.physics.world.addConstraint( constraint );      
+    }
+
+    /**
+     * Removes constraint from physics world
+     * @param {Constraint} constraint 
+     */
+    removeConstraint( constraint ) {
+        this.core.physics.world.removeConstraint( constraint );      
+    }
+
+   
 }
