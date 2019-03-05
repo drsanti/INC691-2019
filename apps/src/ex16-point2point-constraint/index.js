@@ -1,5 +1,5 @@
 /**
- * Example-15: Distance Constraint
+ * Example-16: Point-to-Point Constraint
  * 
  * Dr.Santi Nuratch
  * Embedded Computing and Control Laboratory
@@ -46,8 +46,7 @@ var   bodyA = undefined;                            //!! Rigid-body A
 var   bodyB = undefined;                            //!! Rigid-body B
 
 //!! Constraint parameters
-var   distanceConstraint = undefined;
-const desiredDistance    = 5;
+var   p2pConstraint = undefined;
 const maxForce           = 1000;
 var isAdded              = false;
 
@@ -63,8 +62,8 @@ function uerInit( params ) {
     }
 
     //!! Add axes to the bodies
-    engine.addAxesToBody(bodyA);
-    engine.addAxesToBody(bodyB);
+    engine.addAxesToBody(bodyA, 2.5);
+    engine.addAxesToBody(bodyB, 2.5);
 
     //!! Change bodyA to static, set its position and reset its rotation
     engine.setBodyToStatic(bodyA);
@@ -75,10 +74,15 @@ function uerInit( params ) {
     bodyB.linearDamping  = 0.1;    
     bodyB.angularDamping = 0.1;
 
-    //!! Create distance constraint of the bodyA and bodyB
-    distanceConstraint = new CANNON.DistanceConstraint(
-        bodyA, bodyB,
-        desiredDistance, maxForce
+    //!! Pivots
+    const pivotA = new CANNON.Vec3(0, -2, 0);   //!! Change the pivotA and check the result
+    const pivotB = new CANNON.Vec3(0, +5, 0);   //!! Change the pivotB and check the result
+
+    //!! Create point-to-point constraint of the bodyA and bodyB
+    p2pConstraint = new CANNON.PointToPointConstraint(
+        bodyA, pivotA,
+        bodyB, pivotB,
+        maxForce
     );
 }
 
@@ -91,15 +95,15 @@ function callback( args ) {
 
         if( isAdded === true ) return;   //!! It is added, return
 
-        //!! Add the constraint to the physics world
-        engine.addConstraint( distanceConstraint ); 
+        //!! Add the point-to-point to the physics world
+        engine.addConstraint( p2pConstraint ); 
         isAdded = true;
     }
 
     else if( engine.getKeyDown('r', 1000) ) {
 
-        //!! Remove the constraint from the physics world
-        engine.removeConstraint( distanceConstraint );   
+        //!! Remove the point-to-point from the physics world
+        engine.removeConstraint( p2pConstraint );   
         isAdded = false; 
     }
 

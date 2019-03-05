@@ -239,6 +239,287 @@ export default class Engine {
 
 
     /**********************************************************************************************************/
+    /*         Graphics       Graphics        Graphics        Graphics        Graphics        Graphics        */
+    /**********************************************************************************************************/
+
+    /**
+     * Returns graphics object
+     * @return graphics
+     */
+    getGraphics() {
+        return this.core.graphics; 
+    }
+
+    /**
+     * Returns the current scene object
+     * @return THREE.Scene
+     */
+    getScene() {
+        return this.core.graphics.scene;
+    }
+
+    /**
+     * Returns the main camera object
+     * @return THREE.Camera
+     */
+    getCamera() {
+        return this.core.graphics.camera;
+    }
+
+    /**
+     * Returns the current renderer object
+     * @return THREE.Renderer
+     */
+    getRenderer() {
+        return this.core.graphics.renderer;
+    }
+
+    /**
+     * Returns current used control
+     * @return THREE.Controls
+     */
+    getControl() {
+        return this.core.graphics.control;
+    }
+
+    /**********************************/
+    /*         Grids & Axes           */
+    /**********************************/
+
+    /**
+     * Show grids helper
+     */
+    showGrids() {
+        this.core.graphics.addGrids();
+    }
+
+    /**
+     * Hide grids helper
+     */
+    hideGrids() {
+        this.core.graphics.removeGrids();
+    }
+
+    /**
+     * Toggle grids visibility
+     */
+    toggleGrids() {
+        this.core.graphics.toggleGrids();
+    }
+
+    /**
+     * Show axes helper
+     */
+    showAxes() {
+        this.core.graphics.addAxes();
+    }
+
+    /**
+     * Hide axes helper
+     */
+    hideAxes() {
+        this.core.graphics.removeAxes();
+    }
+
+    /**
+     * Toggle axes visibility
+     */
+    toggleAxes() {
+        this.core.graphics.toggleAxes();
+    }
+
+
+    /**********************************/
+    /*           Lights               */
+    /**********************************/
+
+    /**
+     * Returns array of ambient lights lights
+     * @return Array of THREE.AmbientLight
+     */
+    getAmbientLights() {
+        return this.core.graphics.ambientLights;
+    }
+
+    /**
+     * Returns array of point lights
+     * @return Array of THREE.PointLight
+     */
+    getPointLights() {
+        return this.core.graphics.pointLights;
+    }
+
+    /**
+     * Returns array of spot lights
+     * @return Array of THREE.SpotLight
+     */
+    getSpotLights() {
+        return this.core.graphics.spotLights;
+    }
+
+     /**
+     * Returns array of directional lights
+     * @return Array of THREE.DirectionalLight
+     */
+    getDirectionalLights() {
+        return this.core.graphics.directionalLights;
+    }
+
+    /**
+     * Set color of the target light
+     * @param {THREE.Light} light target light
+     * @param {THREE.Color} color color, THREE.Color or HEX color 
+     * @return THREE.Color 
+     */
+    setLightColor( light, color ) {
+        light.color = new Engine.Color( color );
+        return light.color;
+    }
+
+    /**
+     * Set light visibility
+     * @param {THREE.Light} light target light
+     * @param {boolean} visible   true: visible, false: invisible
+     * @return the garget light
+     */
+    setLightVisible( light, visible ) {
+        light.visible = visible;
+        return light;
+    }
+
+    /**
+     * Set light intensity
+     * @param {THREE.Light} light target light
+     * @param {number} intensity  intensity of light
+     * @return the garget light
+     */
+    setLightIntensity( light, intensity ) {
+        light.intensity = intensity;
+        return light;
+    }
+
+
+    /**********************************************************************************************************/
+    /*   Physics      Physics      Physics      Physics      Physics      Physics      Physics      Physics   */
+    /**********************************************************************************************************/
+
+    /**
+     * Returns physics object
+     */
+    getPhysics() {
+        return this.core.physics; 
+    }
+
+    /**
+     * Returns physics world
+     */
+    getWorld() {
+        return this.core.physics.world;
+    }
+
+    /**
+     * Creates and returns ground material. The created material is added to the physics world internally
+     * @param {number} friction     Ground friction
+     * @param {number} restitution  Ground restitution
+     * @return CANNON.Material
+     */
+    createGroundMaterial( friction, restitution ) {
+        return this.core.physics.createGroundMaterial( friction, restitution );
+    }
+
+    /**
+     * Creates and returns object (body) material. The created material is added to the physics world internally
+     * @param {number} friction     Object friction
+     * @param {number} restitution  Object restitution
+     * @return CANNON.Material
+     */
+    createObjectMaterial( friction, restitution, groundMaterial ) {
+        return this.core.physics.createObjectMaterial( friction, restitution, groundMaterial );
+    }
+
+
+    /**
+     * Returns a rigid body specified by mesh name
+     * @param {string} name mesh name
+     * @return CANNON.Body
+     */
+    getBodyByMeshName( name ) {
+        return this.core.physics.getBodyByMeshName( name );
+    }
+
+
+    /**
+     * Returns all rigid bodies (array of bodies) in the current world
+     * @return array of CANNON.Body
+     */
+    getBodiesFromWorld() {
+        return this.core.physics.world.bodies;
+    }
+
+    /**
+     * Returns all rigid bodies (array of bodies) in the current world
+     * @return array of CANNON.Body
+     */
+    getBodies() {
+        return this.core.physics.world.bodies;
+    }
+
+    /**
+     * Set/Change the provided body to static body
+     * @param {CANNON.Body} body 
+     */
+    setBodyToStatic( body ) {
+        return this.core.physics.changeBodyToStatic( body );
+    }
+
+    /**
+     * Set/Change the provided body to dynamic body
+     * @param {CANNON.Body} body 
+     */
+    setBodyToDynamic( body, mass ) {
+        return this.core.physics.changeBodyToDynamic( body, mass );
+    }
+
+    /**
+     * Show body-debugger
+     */
+    showDebug() {
+        return this.core.physics.bodyDebug.show();  
+    }
+
+     /**
+     * Hide body-debugger
+     */
+    hideDebug() {
+        return this.core.physics.bodyDebug.hide();  
+    }
+
+    /**
+     * Toggle body-debugger visibility
+     */
+    toggleDebug() {
+        return this.core.physics.bodyDebug.toggle();  
+    }
+    
+    /**
+     * Adds constraint to physics world
+     * @param {Constraint} constraint 
+     */
+    addConstraint( constraint ) {
+        this.core.physics.world.addConstraint( constraint );      
+    }
+
+    /**
+     * Removes constraint from physics world
+     * @param {Constraint} constraint 
+     */
+    removeConstraint( constraint ) {
+        this.core.physics.world.removeConstraint( constraint );      
+    }
+
+
+
+    /**********************************************************************************************************/
     /*       Mesh Utility      Mesh Utility       Mesh Utility       Mesh Utility       Mesh Utility          */
     /**********************************************************************************************************/
 
@@ -363,81 +644,6 @@ export default class Engine {
         return this.core.graphics.removeReflectionMap( undefined );
     }
 
-    /**********************************************************************************************************/
-    /*        Body Utility      Body Utility       Body Utility       Body Utility       Body Utility         */
-    /**********************************************************************************************************/
-
-    /**
-     * Returns a rigid body specified by mesh name
-     * @param {string} name mesh name
-     * @return CANNON.Body
-     */
-    getBodyByMeshName( name ) {
-        return this.core.physics.getBodyByMeshName( name );
-    }
-
-
-    /**
-     * Returns all rigid bodies (array of bodies) in the current world
-     * @return array of CANNON.Body
-     */
-    getBodiesFromWorld() {
-        return this.core.physics.world.bodies;
-    }
-
-    /**
-     * Returns all rigid bodies (array of bodies) in the current world
-     * @return array of CANNON.Body
-     */
-    getBodies() {
-        return this.core.physics.world.bodies;
-    }
-
-
-    /**
-     * Set/Change the provided body to static body
-     * @param {CANNON.Body} body 
-     */
-    setBodyToStatic( body ) {
-        return this.core.physics.changeBodyToStatic( body );
-    }
-
-
-    /**
-     * Set/Change the provided body to dynamic body
-     * @param {CANNON.Body} body 
-     */
-    setBodyToDynamic( body, mass ) {
-        return this.core.physics.changeBodyToDynamic( body, mass );
-    }
-
-
-
-    /**********************************************************************************************************/
-    /*  Physics Materials   Physics Materials    Physics Materials    Physics Materials    Physics Materials  */
-    /**********************************************************************************************************/
-
-    /**
-     * Creates and returns ground material. The created material is added to the physics world internally
-     * @param {number} friction     Ground friction
-     * @param {number} restitution  Ground restitution
-     * @return CANNON.Material
-     */
-    createGroundMaterial( friction, restitution ) {
-        return this.core.physics.createGroundMaterial( friction, restitution );
-    }
-
-
-    /**
-     * Creates and returns object (body) material. The created material is added to the physics world internally
-     * @param {number} friction     Object friction
-     * @param {number} restitution  Object restitution
-     * @return CANNON.Material
-     */
-    createObjectMaterial( friction, restitution, groundMaterial ) {
-        return this.core.physics.createObjectMaterial( friction, restitution, groundMaterial );
-    }
-
 
     /**********************************************************************************************************/
     /*   Keyboard      Keyboard       Keyboard       Keyboard       Keyboard       Keyboard        Keyboard   */
@@ -452,8 +658,6 @@ export default class Engine {
     getKeyDown( key, interval ) {
         return this.core.keyboard.getKeyDown( key, interval );
     }
-
-
 
 
     /**********************************************************************************************************/
@@ -477,7 +681,9 @@ export default class Engine {
     }
 
 
-    //!!---------------- Ray -------------------------------------------
+    /**********************************/
+    /*            Ray                 */
+    /**********************************/
 
     /**
      * Return Ray of the raycasting operation
@@ -508,9 +714,9 @@ export default class Engine {
     }
 
 
-    //!!-----------------------------------------------------------------
-    //!!---------------- Intersect --------------------------------------
-    //!!-----------------------------------------------------------------
+    /**********************************/
+    /*          Intersec              */
+    /**********************************/
 
     /**
      * Return RayIntersec of the raycasting operation
@@ -542,9 +748,11 @@ export default class Engine {
         if(!intersect) return undefined;
         return new CANNON.Vec3(intersect.point.x, intersect.point.y, intersect.point.z);
     }
-    //!!---------------- END Intersect -----------------------------------
 
 
+    /**********************************/
+    /*       Ray-Mesh, Ray-Body       */
+    /**********************************/
 
     /**
      * Return RayObject of the raycasting operation
@@ -570,6 +778,10 @@ export default class Engine {
         }
         return undefined;
     }
+
+    /**********************************/
+    /*    Ray-Force, Ray-Impulse      */
+    /**********************************/
 
     /**
      * Helper function to apply force and impulse to world point ro local point
@@ -631,125 +843,6 @@ export default class Engine {
     applyLocalImpulseToRayBody( impulseScale ) {
         return this.applyForceImpulseWorldLocal(impulseScale, 3);
     }
-
-
-
-    /**********************************************************************************************************/
-    /*         Graphics       Graphics        Graphics        Graphics        Graphics        Graphics        */
-    /**********************************************************************************************************/
-
-    /**
-     * Returns the main camera object
-     * @return THREE.Camera
-     */
-    getCamera() {
-        return this.core.graphics.camera;
-    }
-
-    /**
-     * Returns the current scene object
-     * @return THREE.Scene
-     */
-    getScene() {
-        return this.core.graphics.scene;
-    }
-    
-    /**
-     * Returns current used controls
-     * @return THREE.Controls
-     */
-    getControls() {
-        return this.core.graphics.control;
-    }
-
-    /**
-     * Enables/Disables controls
-     * @return THREE.Controls
-     */
-    setControlsEnabled( enabled ) {
-        this.core.graphics.control.enabled = enabled;   
-        return this.core.graphics.control;
-    }
-
-     /**
-     * Set damping factor of controls
-     * @return THREE.Controls
-     */
-    setControlsDamping( damping ) {
-        this.core.graphics.control.damping = damping;
-        return this.core.graphic.control;
-    }
-    
-
-    /**********************************************************************************************************/
-    /*    Light       Light        Light        Light        Light        Light        Light        Light     */
-    /**********************************************************************************************************/
-
-    /**
-     * Returns array of ambient lights lights
-     * @return Array of THREE.AmbientLight
-     */
-    getAmbientLights() {
-        return this.core.graphics.ambientLights;
-    }
-
-    /**
-     * Returns array of point lights
-     * @return Array of THREE.PointLight
-     */
-    getPointLights() {
-        return this.core.graphics.pointLights;
-    }
-
-    /**
-     * Returns array of spot lights
-     * @return Array of THREE.SpotLight
-     */
-    getSpotLights() {
-        return this.core.graphics.spotLights;
-    }
-
-     /**
-     * Returns array of directional lights
-     * @return Array of THREE.DirectionalLight
-     */
-    getDirectionalLights() {
-        return this.core.graphics.directionalLights;
-    }
-
-    /**
-     * Set color of the target light
-     * @param {THREE.Light} light target light
-     * @param {THREE.Color} color color, THREE.Color or HEX color 
-     * @return THREE.Color 
-     */
-    setLightColor( light, color ) {
-        light.color = new Engine.Color( color );
-        return light.color;
-    }
-
-    /**
-     * Set light visibility
-     * @param {THREE.Light} light target light
-     * @param {boolean} visible   true: visible, false: invisible
-     * @return the garget light
-     */
-    setLightVisible( light, visible ) {
-        light.visible = visible;
-        return light;
-    }
-
-    /**
-     * Set light intensity
-     * @param {THREE.Light} light target light
-     * @param {number} intensity  intensity of light
-     * @return the garget light
-     */
-    setLightIntensity( light, intensity ) {
-        light.intensity = intensity;
-        return light;
-    }
-
 
 
     /**********************************************************************************************************/
@@ -931,154 +1024,17 @@ export default class Engine {
      * @return Promise
      */
     loadAssets( model, callback ) {
-        this.core.assetLoader.load( model, callback );
+        return this.core.assetLoader.load( model, callback );
     }
 
     /**
      * Loads models, adds to scene, creates rigid-body and applies reflection-map
      * @param {string} model file name
-     * @param {*} callback callback function
+     * @param {*} callback   callback function
      * @return Promise
      */
     loadModel( model, callback ) {
-
-        return new Promise( (resolve, reject) => {
-
-            //!! 1) Load model
-            this.core.graphics.loadGLTF(model).then( (gltf) => {
-
-                //!! 2) Add all objects to scene
-                this.core.graphics.scene.add( gltf.scene );
-
-                //!! 3) Create rigid-bodies
-                this.core.physics.createBodiesFromScene( gltf.scene );
-
-                //!! 4) Apply reflection map to all meshes
-                if( this.core.graphics.options.useReflection ) {
-                    this.core.graphics.applyReflectionMap( gltf.scene );
-                }
-                
-                //!! 5) Resolve
-                resolve(gltf);
-
-                //!! Callback
-                if( callback ) {
-                   callback(gltf); 
-                }
-            });  
-        });
+        return this.core.loadModel( model, callback );
     }
 
-    /**
-     * Show body-debugger
-     */
-    showDebug() {
-        return this.core.physics.bodyDebug.show();  
-    }
-
-    /**
-     * Hide body-debugger
-     */
-    hideDebug() {
-        return this.core.physics.bodyDebug.hide();  
-    }
-
-    /**
-     * Toggle body-debugger visibility
-     */
-    toggleDebug() {
-        return this.core.physics.bodyDebug.toggle();  
-    }
-
-    /**
-     * Show grids helper
-     */
-    showGrids() {
-        this.core.graphics.addGrids();
-    }
-
-    /**
-     * Hide grids helper
-     */
-    hideGrids() {
-        this.core.graphics.removeGrids();
-    }
-
-    /**
-     * Toggle grids visibility
-     */
-    toggleGrids() {
-        this.core.graphics.toggleGrids();
-    }
-
-
-    /**
-     * Show axes helper
-     */
-    showAxes() {
-        this.core.graphics.addAxes();
-    }
-
-    
-    /**
-     * Hide axes helper
-     */
-    hideAxes() {
-        this.core.graphics.removeAxes();
-    }
-
-    /**
-     * Toggle axes visibility
-     */
-    toggleAxes() {
-        this.core.graphics.toggleAxes();
-    }
-
-
-   
-    /**
-     * Returns graphics object
-     */
-    getGraphics() {
-        return this.core.graphics; 
-    }
-
-    /**
-     * Returns graphics scene, the main scene
-     */
-    getScene() {
-        return this.core.graphics.scene;
-    }
-
-     /**
-     * Returns physics world
-     */
-    getWorld() {
-        return this.core.physics.world;
-    }
-
-    /**
-     * Returns physics object
-     */
-    getPhysics() {
-        return this.core.physics; 
-    }
-
-    /**
-     * Adds constraint to physics world
-     * @param {Constraint} constraint 
-     */
-    addConstraint( constraint ) {
-        this.core.physics.world.addConstraint( constraint );      
-    }
-
-    /**
-     * Removes constraint from physics world
-     * @param {Constraint} constraint 
-     */
-    removeConstraint( constraint ) {
-        this.core.physics.world.removeConstraint( constraint );      
-    }
-
-   
 }
