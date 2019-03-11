@@ -16,6 +16,18 @@
  * Press key '1' to use method 1
  */
 
+
+
+
+
+import {UIContainer, UIPrint} from '../libs/ui/ECC-Web-Gui';
+
+new UIContainer("Debug", new UIPrint());
+
+
+
+
+
 import {Engine, CANNON, THREE} from '../libs/ECC-CGP-Engine';
 
 //!! Create the engine with physics enabled
@@ -23,6 +35,12 @@ const engine = new Engine({
     
     physics:{
         enabled: true,     //!! Enable the physics engine
+    },
+    graphics: {
+        axes: {
+            enabled: true,
+            size: 3
+        }
     }
 });
 
@@ -57,7 +75,7 @@ var lineB = undefined;
 var pivotA = undefined;
 var pivotB = undefined;
 
-const OPACITY_VAL = 0.6;
+const OPACITY_VAL = 0.5;
 var   method = 1;
 //!! User initialization function
 function uerInit( params ) {
@@ -117,8 +135,8 @@ function createPointToPointLine(p1, p2) {
     positions.push(p2.x); positions.push(p2.y); positions.push(p2.z);    //!! p2: x, y, z
 
     //!! Colors
-    colors.push(0); colors.push(1); colors.push(1);    //!! Blue: r, g, b
-    colors.push(1); colors.push(1); colors.push(0);    //!! Red:  r, g, b
+    colors.push(0); colors.push(1); colors.push(1);    //!! c1: r, g, b
+    colors.push(1); colors.push(1); colors.push(0);    //!! c2:  r, g, b
 
     //!! Adds attributes, the positions and colors
     geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
@@ -147,6 +165,9 @@ function updatePointToPointLine(ln, p1, p2) {
     positions[i++] = p2.y;
     positions[i++] = p2.z;
     ln.geometry.attributes.position.needsUpdate = true; 
+
+    //!! Computes bounding
+    //geometry.computeBoundingSphere();
 }
 
 //!! Engine callback function
@@ -176,11 +197,11 @@ function callback( args ) {
             hookA.vsub(bodyB.position, dir);
             dir.normalize();
 
-            //!! Offset vector from origin to the top face of the bodyB
+            //!! Offset vector from originB to the top face of the bodyB
             var offset = new CANNON.Vec3();
             dir.mult(bodyB.threemesh.scale.y, offset);
 
-            //!! pinB is sticked to the bottom face of the bynamic box (bodyB)
+            //!! pinB is sticked to the top face of the bynamic box (bodyB)
             var pinB = new CANNON.Vec3();
             bodyB.position.vadd(offset, pinB);
 
@@ -227,5 +248,9 @@ function callback( args ) {
     }
     else if( engine.getKeyDown('1', 2000) ) {   
         method = 1;
+    }
+
+    else if( engine.getKeyDown('x', 2000) ) {   
+       engine.toggleAxes();
     }
 }

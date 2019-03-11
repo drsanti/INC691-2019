@@ -12,6 +12,7 @@
 ***************************************************************************************
 */
 
+
 import { EngineCore, CANNON, THREE, Utils } from './EngineCore';
 
 export { Engine, EngineCore, CANNON, THREE, Utils };
@@ -28,6 +29,19 @@ export default class Engine {
         this.core = new EngineCore( options );
     }
 
+    /**
+     * THREE
+     */
+    static get GRAPHICS() {
+        return THREE;  
+    }
+
+    /**
+     * CANNON
+     */
+    static get PHYSICS() {
+        return CANNON;  
+    }
 
     /**
      * THREE.Color
@@ -111,7 +125,7 @@ export default class Engine {
      * @param {number} scale vector scale
      */
     getForwardVector( scale ) {
-        return new CANNON.Vec3(0, 0, +1).mult( (scale?scale:1) );   
+        return new CANNON.Vec3(0, 0, +1).mult( (scale===undefined?1:scale) );   
     }
 
      /**
@@ -119,7 +133,7 @@ export default class Engine {
      * @param {number} scale vector scale
      */
     getBackwardVector( scale ) {
-        return new CANNON.Vec3(0, 0, -1).mult(scale?scale:1);   
+        return new CANNON.Vec3(0, 0, -1).mult(scale===undefined?1:scale);   
     }
 
      /**
@@ -127,7 +141,7 @@ export default class Engine {
      * @param {number} scale vector scale
      */
     getRightVector( scale ){
-        return new CANNON.Vec3(-1, 0, 0).mult(scale?scale:1); 
+        return new CANNON.Vec3(-1, 0, 0).mult(scale===undefined?1:scale); 
     }
 
     /**
@@ -135,7 +149,7 @@ export default class Engine {
      * @param {number} scale vector scale
      */
     getLeftVector( scale ){
-        return new CANNON.Vec3(+1, 0, 0).mult(scale?scale:1); 
+        return new CANNON.Vec3(+1, 0, 0).mult(scale===undefined?1:scale); 
     }
 
     /**
@@ -143,7 +157,7 @@ export default class Engine {
      * @param {number} scale vector scale
      */
     getUpVector( scale ){
-        return new CANNON.Vec3(0, +1, 0).mult(scale?scale:1); 
+        return new CANNON.Vec3(0, +1, 0).mult(scale===undefined?1:scale); 
     }
 
     /**
@@ -151,7 +165,7 @@ export default class Engine {
      * @param {number} scale vector scale
      */
     getDownVector( scale ){
-        return new CANNON.Vec3(0, -1, 0).mult(scale?scale:1); 
+        return new CANNON.Vec3(0, -1, 0).mult(scale===undefined?1:scale); 
     }
 
 
@@ -291,6 +305,7 @@ export default class Engine {
      */
     showGrids() {
         this.core.graphics.addGrids();
+        return this;
     }
 
     /**
@@ -298,6 +313,7 @@ export default class Engine {
      */
     hideGrids() {
         this.core.graphics.removeGrids();
+        return this;
     }
 
     /**
@@ -305,6 +321,7 @@ export default class Engine {
      */
     toggleGrids() {
         this.core.graphics.toggleGrids();
+        return this;
     }
 
     /**
@@ -312,6 +329,7 @@ export default class Engine {
      */
     showAxes() {
         this.core.graphics.addAxes();
+        return this;
     }
 
     /**
@@ -319,6 +337,7 @@ export default class Engine {
      */
     hideAxes() {
         this.core.graphics.removeAxes();
+        return this;
     }
 
     /**
@@ -326,6 +345,7 @@ export default class Engine {
      */
     toggleAxes() {
         this.core.graphics.toggleAxes();
+        return this;
     }
 
 
@@ -369,33 +389,30 @@ export default class Engine {
      * Set color of the target light
      * @param {THREE.Light} light target light
      * @param {THREE.Color} color color, THREE.Color or HEX color 
-     * @return THREE.Color 
      */
     setLightColor( light, color ) {
         light.color = new Engine.Color( color );
-        return light.color;
+        return this;
     }
 
     /**
      * Set light visibility
      * @param {THREE.Light} light target light
      * @param {boolean} visible   true: visible, false: invisible
-     * @return the garget light
      */
     setLightVisible( light, visible ) {
         light.visible = visible;
-        return light;
+        return this;
     }
 
     /**
      * Set light intensity
      * @param {THREE.Light} light target light
      * @param {number} intensity  intensity of light
-     * @return the garget light
      */
     setLightIntensity( light, intensity ) {
         light.intensity = intensity;
-        return light;
+        return this;
     }
 
 
@@ -469,7 +486,8 @@ export default class Engine {
      * @param {CANNON.Body} body 
      */
     setBodyToStatic( body ) {
-        return this.core.physics.changeBodyToStatic( body );
+        this.core.physics.changeBodyToStatic( body );
+        return this;
     }
 
     /**
@@ -477,28 +495,32 @@ export default class Engine {
      * @param {CANNON.Body} body 
      */
     setBodyToDynamic( body, mass ) {
-        return this.core.physics.changeBodyToDynamic( body, mass );
+        this.core.physics.changeBodyToDynamic( body, mass );
+        return this;
     }
 
     /**
      * Show body-debugger
      */
     showDebug() {
-        return this.core.physics.bodyDebug.show();  
+        this.core.physics.showDebug();
+        return this;
     }
 
      /**
      * Hide body-debugger
      */
     hideDebug() {
-        return this.core.physics.bodyDebug.hide();  
+        this.core.physics.hideDebug();
+        return this;
     }
 
-    /**
-     * Toggle body-debugger visibility
-     */
+    /*
+    * Toggle body-debugger visibility. This function works only when the debug is enabled in the { physics:debug{enabled: true} }
+    */
     toggleDebug() {
-        return this.core.physics.bodyDebug.toggle();  
+        this.core.physics.toggleDebug();
+        return this;
     }
     
     /**
@@ -506,7 +528,8 @@ export default class Engine {
      * @param {Constraint} constraint 
      */
     addConstraint( constraint ) {
-        this.core.physics.world.addConstraint( constraint );      
+        this.core.physics.world.addConstraint( constraint );   
+        return this;   
     }
 
     /**
@@ -514,7 +537,8 @@ export default class Engine {
      * @param {Constraint} constraint 
      */
     removeConstraint( constraint ) {
-        this.core.physics.world.removeConstraint( constraint );      
+        this.core.physics.world.removeConstraint( constraint );   
+        return this;   
     }
 
 
@@ -565,6 +589,7 @@ export default class Engine {
      */
     addAxesToMesh( mesh, size ) {
         this.core.graphics.addAxesToMesh( mesh, size );
+        return this;
     }
 
     /**
@@ -573,7 +598,8 @@ export default class Engine {
      * @param {number} size Axes size
      */
     addAxesToBody( body, size ) {
-        this.core.graphics.addAxesToMesh( body.threemesh, size );   
+        this.core.graphics.addAxesToMesh( body.threemesh, size );  
+        return this; 
     }
 
 
@@ -583,14 +609,16 @@ export default class Engine {
      */
     removeAxesFromMesh( mesh ) {
         this.core.graphics.removeAxesFromMesh( mesh );
+        return this;
     }
 
     /**
      * Removes axes from the spefied body
-     * @param {CANNON.Body} mesh TCANNON Body
+     * @param {CANNON.Body} mesh CANNON Body
      */
     removeAxesFromBody( mesh ) {
         this.core.graphics.removeAxesFromMesh( mesh.threemesh );
+        return this;
     }
 
 
@@ -600,6 +628,7 @@ export default class Engine {
      */
     addAxesToAllMeshes( size ) {
         this.core.graphics.addAxesToAllMeshes( size );
+        return this;
     }
 
     /**
@@ -609,39 +638,44 @@ export default class Engine {
     addAxesToAllBodies( size ) {
         var bodies = this.getBodies();
         bodies.forEach(body => {
-            this.addAxesToBody( body );
+            this.addAxesToBody( body, size );
         });
+        return this;
     }
 
     /**
      * Removes axes from all meshes in the currentt scene
      */
     removeAxesFromAllMeshes( ) {
-        return this.core.graphics.removeAxesFromAllMeshes();
+        this.core.graphics.removeAxesFromAllMeshes();
+        return this;
     }
 
     /**
      * Removes axes from all bodies in the currentt scene
      */
-    removeAxesFromAllBodies( size ) {
+    removeAxesFromAllBodies() {
         var bodies = this.getBodies();
         bodies.forEach(body => {
             this.removeAxesFromBody( body );
         });
+        return this;
     }
 
     /**
      * Apply reflection map to all meshes
      */
     applyReflectionMapToAllMeshes() {
-        return this.core.graphics.applyReflectionMap( undefined );
+        this.core.graphics.applyReflectionMap( undefined );
+        return this;
     }
 
     /**
      * Remove reflection map from all meshes
      */
     removeReflectionMapFromAllMeshes() {
-        return this.core.graphics.removeReflectionMap( undefined );
+        this.core.graphics.removeReflectionMap( undefined );
+        return this;
     }
 
 
@@ -787,7 +821,6 @@ export default class Engine {
      * Helper function to apply force and impulse to world point ro local point
      * @param {number} scale force or impulse scale
      * @param {number} type  0: force, 1: local force, 2: impulse, 3: local impulse
-     * @return CANNON.Body
      */
     applyForceImpulseWorldLocal( scale, type ) {
         const raycast = this.getRaycast();
@@ -805,43 +838,44 @@ export default class Engine {
         }else if( type === 3 ){
             body.applyLocalImpulse( direction.mult(scale), point );    
         }
-        return body;
+        return this;
     }
 
     /**
-     * Apply force to raycased rigid body
+     * Apply force to raycasted rigid body
      * @param {number} forceScale force scale to be applied to the raycasted body
-     * @return CANNON.Body
+
      */
     applyForceToRayBody( forceScale ) {
-        return this.applyForceImpulseWorldLocal(forceScale, 0);
+        this.applyForceImpulseWorldLocal( forceScale, 0 );
+        return this;
     }
 
     /**
-     * Apply local force to raycased rigid body
+     * Apply local force to raycasted rigid body
      * @param {number} forceScale force scale to be applied to the raycasted body
-     * @return CANNON.Body
      */
     applyLocalForceToRayBody( forceScale ) {
-        return this.applyForceImpulseWorldLocal(forceScale, 1);
+        this.applyForceImpulseWorldLocal( forceScale, 1 );
+        return this;
     }
 
     /**
      * Apply impulse to raycased rigid body
      * @param {number} impulseScale impulse scale to be applied to the raycasted body
-     * @return CANNON.Body
      */
     applyImpulseToRayBody( impulseScale ) {
-        return this.applyForceImpulseWorldLocal(impulseScale, 2);
+        this.applyForceImpulseWorldLocal( impulseScale, 2 );
+        return this;
     }
 
     /**
      * Apply local impulse to raycased rigid body
      * @param {number} impulseScale impulse scale to be applied to the raycasted body
-     * @return CANNON.Body
      */
     applyLocalImpulseToRayBody( impulseScale ) {
-        return this.applyForceImpulseWorldLocal(impulseScale, 3);
+        this.applyForceImpulseWorldLocal( impulseScale, 3 );
+        return this
     }
 
 
@@ -853,55 +887,55 @@ export default class Engine {
      * Print message to console window
      * @param {string} message      message to be printed to console window
      * @param {string} typeOrColor  message type or message color code
-     * @return Utils object
      */
     print( message, typeOrColor ) {
-        return Utils.print( message, typeOrColor );
+        Utils.print( message, typeOrColor );
+        return this;
     }
 
     /**
      * Print info-message to console window
      * @param {string} message message to be printed to console window
-     * @return Utils object
      */
     printInfo( message ) {
-        return Utils.printInfo( message );
+        Utils.printInfo( message );
+        return this;
     }
 
     /**
      * Print success-message to console window
      * @param {string} message message to be printed to console window
-     * @return Utils object
      */
     printSuccess( message ) {
-        return Utils.printSuccess( message );
+        Utils.printSuccess( message );
+        return this;
     }
 
     /**
      * Print warning-message to console window
      * @param {string} message message to be printed to console window
-     * @return Utils object
      */
     printWarning( message ) {
-        return Utils.printWarning( message );
+        Utils.printWarning( message );
+        return this;
     }
 
     /**
      * Print danger-message to console window
      * @param {string} message message to be printed to console window
-     * @return Utils object
      */
     printDanger( message ) {
-        return Utils.printDanger( message );
+        Utils.printDanger( message );
+        return this;
     }
 
     /**
      * Print primary-message to console window
      * @param {string} message message to be printed to console window
-     * @return Utils object
      */
     printPrimary( message ) {
-        return Utils.printPrimary( message );
+        Utils.printPrimary( message );
+        return this;
     }
 
 
@@ -912,30 +946,30 @@ export default class Engine {
      * Adds label to the mesh
      * @param {THREE.Mesh} mesh  target mesh 
      * @param {string}     label label/text to be displayed on the mesh
-     * @return CSS2DObject label
      */
     addLabel( mesh, label ) {
-        return this.core.labelRenderer.addLabel( mesh, label );
+        this.core.labelRenderer.addLabel( mesh, label );
+        return this;
     }
 
     /**
      * Changes css class name of the label
      * @param {THREE.Mesh} mesh  target mesh 
      * @param {string} className css class name
-     * @return CSS2DObject label
      */
     setLabelClass( mesh, className ) {
-        return this.core.labelRenderer.setLabelClass( mesh, className );
+        this.core.labelRenderer.setLabelClass( mesh, className );
+        return this;
     }
 
     /**
      * Adds css class name into css classList of the label element
      * @param {HREE.Mesh} mesh   target mesh 
      * @param {string} className css class name
-     * @return CSS2DObject label
      */
     addLabelClass( mesh, className ) {
-        return this.core.labelRenderer.addLabelClass( mesh, className );
+        this.core.labelRenderer.addLabelClass( mesh, className );
+        return this;
     }
 
     /**
@@ -951,51 +985,52 @@ export default class Engine {
      * Updates label of the provided mesh
      * @param {THREE.Mesh} mesh  target mesh
      * @param {string}     label label/text to be displayed on the mesh
-     * @return CSS2DObject label
      */
     updateLabel( mesh, label ) {
-        return this.core.labelRenderer.updateLabel( mesh, label );
+        this.core.labelRenderer.updateLabel( mesh, label );
+        return this;
     }
 
     /**
      * Sets label position relative to the target mesh
      * @param {THREE.Mesh}    mesh     target mesh
      * @param {THREE.Vector3} position label position
-     * @return CSS2DObject label
      */
     setLabelPosition(mesh, position) {
-        return this.core.labelRenderer.setLabelPosition( mesh, position );
+        this.core.labelRenderer.setLabelPosition( mesh, position );
+        return this;
     }
 
     /**
      * Add labels to meshes in the current scene
-     * @return THREE.Mesh[ ]
      */
     addLabelToObjects() {
-        return this.core.labelRenderer.addLabelToObjects( );
+        this.core.labelRenderer.addLabelToObjects( );
+        return this;
     }
 
     /**
      * Removes all labels from meshes in the current scene
-     * @return THREE.Mesh[ ]
      */
     removeLabel( mesh ) {
-        return this.core.labelRenderer.removeLabel( mesh );   
+        this.core.labelRenderer.removeLabel( mesh ); 
+        return this;
     }
 
     /**
      * Removes all labels from meshes in the current scene
-     * @return THREE.Mesh[ ]
      */
     removeLabelFromObjects() {
-        return this.core.labelRenderer.removeLabelFromObjects();   
+        this.core.labelRenderer.removeLabelFromObjects();   
+        return this;
     }
 
     /**
      * Show labels
      */
     showLabels() {
-        return this.core.labelRenderer.show();
+        this.core.labelRenderer.show();
+        return this;
     }
     
     
@@ -1003,14 +1038,16 @@ export default class Engine {
      * Hide labels
      */
     hideLabels() {
-        return this.core.labelRenderer.hide();
+        this.core.labelRenderer.hide();
+        return this;
     }
 
     /**
      * Toggle labels visibility
      */
     toggleLabels() {
-        return this.core.labelRenderer.toggle();
+        this.core.labelRenderer.toggle();
+        return this;
     }
 
     /**********************************************************************************************************/

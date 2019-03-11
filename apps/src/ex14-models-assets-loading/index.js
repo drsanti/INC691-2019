@@ -23,7 +23,9 @@ import Engine from '../libs/ECC-CGP-Engine';
 const engine = new Engine({
     physics:{
         enabled:  true,         //!! Enable the physics engine
-        useDebug: false,        //!! Disable mesh debugging
+        debug:{
+            enabled: false      //!! Disable mesh debugging
+        }
     },
 });
 
