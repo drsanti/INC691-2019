@@ -16,9 +16,14 @@
 // const __exdir__  = 'ex15-distance-constraint';
 // const __exdir__  = 'ex16-point2point-constraint';
 // const __exdir__  = 'ex17-point2point-line-buffer-geometry';
-
-const __exdir__  = 'ex18-using-web-gui';
-
+// const __exdir__  = 'ex18-using-web-gui';
+// const __exdir__  = 'ex19-object-cloning-child-parant';
+// const __exdir__  = 'ex20-asset-loading-cloning';
+// const __exdir__  = 'ex21-asset-complex-loader';
+// const __exdir__  = 'ex22-rigid-body-cloning-chain-constraints';
+// const __exdir__  = 'ex23-hinge-constraint-4-wheels';
+// const __exdir__  = 'ex24-wheel-driving-motors';
+const __exdir__  = 'ex25-car-turning-camera-tracking';
 
 
 //!!
@@ -26,7 +31,6 @@ const __exdir__  = 'ex18-using-web-gui';
 const __mode__   = 'app';
 //!!
 //!!
-
 
 const config = {
   app: {
@@ -41,14 +45,14 @@ const config = {
 const path = require('path');
 
 module.exports = {
-  entry: (__mode__ === 'app') ? './' + config.app.root + '/src/' + config.app.main  :  './src/' + config.dev.main,
+  entry: ( __mode__ === 'app' ) ? './' + config.app.root + '/src/' + config.app.main  :  './src/' + config.dev.main,
   mode: 'development',
   output: {
-    path: path.resolve(__dirname, config.app.root + '/public'),
+    path: path.resolve( __dirname, config.app.root + '/public' ),
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, config.app.root + '/public'),
+    contentBase: path.join( __dirname, config.app.root + '/public' ),
     compress: true,
     port: 9001,
   },
@@ -67,7 +71,7 @@ module.exports = {
       {
         test: /\.css$/,
         loader:'style-loader!css-loader'
-      }
+      },
     ]
   },
 };

@@ -16,18 +16,6 @@
  * Press key '1' to use method 1
  */
 
-
-
-
-
-import {UIContainer, UIPrint} from '../libs/ui/ECC-Web-Gui';
-
-new UIContainer("Debug", new UIPrint());
-
-
-
-
-
 import {Engine, CANNON, THREE} from '../libs/ECC-CGP-Engine';
 
 //!! Create the engine with physics enabled

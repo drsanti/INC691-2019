@@ -12,26 +12,53 @@
 ***************************************************************************************
 */
 
-import { UIContainer, UINum, UIVector, UIPlot, UIPrint, UIText, UIButton, UIUtils } from './ui/WebGuiCore';
-export { UIContainer, UINum, UIVector, UIPlot, UIPrint, UIText, UIButton, UIUtils };
+import { UIContainer, UINum, UIVector, UIPlot, UIPrint, UIText, UIButton, Oscilloscope, UIUtils } from './ui/WebGuiCore';
+export { UIContainer, UINum, UIVector, UIPlot, UIPrint, UIText, UIButton, Oscilloscope, UIUtils };
 
 
 function WebGui() { }
 
 /**
- * Create numerical control
- * @param {string} title window title
- * @param {number} x     x position
- * @param {number} y     y position
- * @param {string} name  variable name
- * @param {number} min   minimum value
- * @param {number} max   maximum value
- * @param {number} max   initial value
- * @param {number} callback   on-changed callback function
+ * Create numerical control without container
+ * @param {string}  type    type of item ('vx', 'vy', 'vz', 'vw')
+ * @param {string}  name    variable name
+ * @param {number}  min     minimum value
+ * @param {number}  max     maximum value
+ * @param {number}  max     initial value
+ * @param {boolean} inline  display style, if true, all elements will be placed in single row
+ * @param {number}  callback on-changed callback function
  */
-WebGui.createNumber = function( title, x, y, type, name, min, max, val, style, callback ) {
+WebGui.createNumItem = function ( type, name, min, max, val, inline, callback ) {
     return new UINum( name, {
-        type:   style,  //!! 'vx', 'vy', 'vz', 'vw'
+        type:   type,  //!! 'vx', 'vy', 'vz', 'vw'
+        min:    min,
+        max:    max,
+        val:    val,
+        inline: inline,
+        wrapper: {
+            "width" : "74px"
+        },
+        label: {},
+        value: {}
+    }, function( v ){ if( callback ) callback ( v ); } )
+}
+
+/**
+ * Create numeric control with its container
+ * @param {string}  title   window title
+ * @param {number}  x       x position
+ * @param {number}  y       y position
+ * @param {string}  style   type of container ('red', 'green', 'blue', 'yellow', 'pink')
+ * @param {string}  name    variable name
+ * @param {number}  min     minimum value
+ * @param {number}  max     maximum value
+ * @param {number}  val     initial value
+ * @param {string}  type    type or type of control ('vx', 'vy', 'vz', 'vw')
+ * @param {number}  callback   on-changed callback function
+ */
+WebGui.createNumber = function( title, x, y, style, name, min, max, val, type, callback ) {
+    return new UINum( name, {
+        type:   type,  //!! 'vx', 'vy', 'vz', 'vw'
         min:    min,
         max:    max,
         val:    val,
@@ -42,9 +69,9 @@ WebGui.createNumber = function( title, x, y, type, name, min, max, val, style, c
         },
         value: {
         }
-    }, function( v ){ if( callback ) callback ( name, v ); } )
+    }, function( v ){ if( callback ) callback ( v, name ); } )
     .addTo( new UIContainer( title, {
-        type: type,
+        type: style,
         position: {
             x: x,
             y: y
@@ -58,17 +85,19 @@ WebGui.createNumber = function( title, x, y, type, name, min, max, val, style, c
 
 /**
  * Create scalar control
- * @param {string} title window title
- * @param {number} x     x position
- * @param {number} y     y position
- * @param {string} name  variable name
- * @param {number} min   minimum value
- * @param {number} max   maximum value
- * @param {number} max   initial value
- * @param {number} callback   on-changed callback function
+ * @param {string}  title   window title
+ * @param {number}  x       x position
+ * @param {number}  y       y position
+ * @param {string}  style   style of container ('red', 'green', 'blue', 'yellow', 'pink')
+ * @param {string}  name    variable name
+ * @param {number}  min     minimum value
+ * @param {number}  max     maximum value
+ * @param {number}  val     initial value
+ * @param {string}  type    type orof control ('vx', 'vy', 'vz', 'vw')
+ * @param {number}  callback   on-changed callback function
  */
-WebGui.createScalar = function( title, x, y, type, name, min, max, val, style, callback ) {
-    return WebGui.createNumber( title, x, y, type, name, min, max, val, style, callback );
+WebGui.createScalar = function( title, x, y, style, name, min, max, val, type, callback ) {
+    return WebGui.createNumber( title, x, y, style, name, min, max, val, type, callback );
 }
 
 /**
@@ -76,18 +105,18 @@ WebGui.createScalar = function( title, x, y, type, name, min, max, val, style, c
  * @param {string}  title   window title
  * @param {number}  x       x position
  * @param {number}  y       y position
- * @param {string}  type    type of container ('red', 'green', 'blue', 'yellow', 'pink')
+ * @param {string}  style   style of container ('red', 'green', 'blue', 'yellow', 'pink')
  * @param {boolean} inline  display style, if true, all elements will be placed in single row
  * @param {number}  min     minimum value
  * @param {number}  max     maximum value
  * @param {number}  val     initial value
  * @param {number}  callback   on-changed callback function
  */
-WebGui.createVector2 = function( title, x, y, type, inline, min, max, val, callback ) {
+WebGui.createVector2 = function( title, x, y, style, inline, min, max, val, callback ) {
     const uiv = new UIVector( title, {
        
         container:{
-            type: type,
+            type: style,
             wrapper:{}, header:{}, body: {}, footer:{},
             position: { 
                 x: x, y: y
@@ -98,7 +127,6 @@ WebGui.createVector2 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'x', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -108,7 +136,6 @@ WebGui.createVector2 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'y', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -122,21 +149,21 @@ WebGui.createVector2 = function( title, x, y, type, inline, min, max, val, callb
 
 /**
  * Create vector3 (x, y, z) control
- * @param {string} title    window title
- * @param {number} x        x position
- * @param {number} y        y position
- * @param {string} type     type of container ('red', 'green', 'blue', 'yellow', 'pink')
- * @param {boolean} inline  display style, if true, all elements will be placed in single row
- * @param {number} min      minimum value
- * @param {number} max      maximum value
- * @param {number} val      initial value
- * @param {number} callback   on-changed callback function
+ * @param {string}  title    window title
+ * @param {number}  x        x position
+ * @param {number}  y        y position
+ * @param {string}  style    style of container ('red', 'green', 'blue', 'yellow', 'pink')
+ * @param {boolean} inline   display style, if true, all elements will be placed in single row
+ * @param {number}  min      minimum value
+ * @param {number}  max      maximum value
+ * @param {number}  val      initial value
+ * @param {number}  callback on-changed callback function
  */
-WebGui.createVector3 = function( title, x, y, type, inline, min, max, val, callback ) {
+WebGui.createVector3 = function( title, x, y, style, inline, min, max, val, callback ) {
     const uiv = new UIVector( title, {
        
         container:{
-            type: type,
+            type: style,
             wrapper:{}, header:{}, body: {}, footer:{},
             position: { 
                 x: x, y: y
@@ -147,7 +174,6 @@ WebGui.createVector3 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'x', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -157,7 +183,6 @@ WebGui.createVector3 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'y', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -167,7 +192,6 @@ WebGui.createVector3 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'z', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -182,21 +206,21 @@ WebGui.createVector3 = function( title, x, y, type, inline, min, max, val, callb
 
 /**
  * Create vector4 (Quaternion x, y, z, w) control
- * @param {string} title window title
- * @param {number} x     x position
- * @param {number} y     y position
- * @param {string} type  type of container ('red', 'green', 'blue', 'yellow', 'pink')
- * @param {boolean} inline  display style, if true, all elements will be placed in single row
- * @param {number} min   minimum value
- * @param {number} max   maximum value
- * @param {number} val   initial value
- * @param {number} callback   on-changed callback function
+ * @param {string}  title window title
+ * @param {number}  x      x position
+ * @param {number}  y      y position
+ * @param {string}  style  style of container ('red', 'green', 'blue', 'yellow', 'pink')
+ * @param {boolean} inline display style, if true, all elements will be placed in single row
+ * @param {number}  min    minimum value
+ * @param {number}  max    maximum value
+ * @param {number}  val    initial value
+ * @param {number}  callback   on-changed callback function
  */
-WebGui.createVector4 = function( title, x, y, type, inline, min, max, val, callback ) {
+WebGui.createVector4 = function( title, x, y, style, inline, min, max, val, callback ) {
     const uiv = new UIVector( title, {
        
         container:{
-            type: type,
+            type: style,
             wrapper:{}, header:{}, body: {}, footer:{},
             position: { 
                 x: x, y: y
@@ -207,7 +231,6 @@ WebGui.createVector4 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'x', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -217,7 +240,6 @@ WebGui.createVector4 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'y', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -227,7 +249,6 @@ WebGui.createVector4 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'z', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -237,7 +258,6 @@ WebGui.createVector4 = function( title, x, y, type, inline, min, max, val, callb
                 inline: inline,
                 callback: function( v ){ if( callback ) callback ( 'w', v ); },
                 min:min, max:max, val:val,
-                wrapper:{},
                 wrapper: {
                     "width" : "74px"
                 },
@@ -325,8 +345,8 @@ WebGui.updateVector4 = function( target, vx, vy, vz, vw) {
 
 /**
  * Update vector control
- * @param {UIVector}  target UIVector object
- * @param {object} vector  vector object 
+ * @param {UIVector}  target  UIVector object
+ * @param {object}    vector  vector object 
  */
 WebGui.updateVector = function( target, vector) {
     if(vector.x && target.vx)target.setVectorX( vector.x );
@@ -518,7 +538,7 @@ WebGui.createContainer = function ( title, type, x, y, callback ) {
 
 /**
  * Create a button and add to container
- * @param {UIContainer} uic         Button object
+ * @param {UIContainer} uic         Button container
  * @param {string}      text        Button text
  * @param {number}      id          Button id
  * @param {string}      type        Button type ('red', 'green', 'blue', 'yellow', 'pink')
@@ -531,6 +551,33 @@ WebGui.createButton = function ( uic, text, id, type, callback, options ) {
     options.id = id;
     uic.addItem( new UIButton(text, type, callback, options ) );
     return this;
+}
+
+
+
+/**
+ * Creates an oscilloscope and adds it into container
+ * @param {UIContainer} uic         Oscilloscope container
+ * @param {number}      width       scope canvas width
+ * @param {number}      height      scope canvas height
+ * @param {object}      options     Button options
+ */
+WebGui.createOscilloscope = function ( uic, width, height, options ) {
+    options = options || {};
+    const osc = new Oscilloscope( width, height, {
+        controls: {
+            wrapper: {
+                "min-width": "82px",
+                "display" : "inline-block",
+                "text-align" : "left"
+            },
+            label: { },
+            value: { }
+        },
+        points: options.points || 500
+    });
+    uic.addItem( osc );
+    return osc;
 }
 
 export { WebGui };

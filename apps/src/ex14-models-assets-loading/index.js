@@ -15,6 +15,8 @@
  * Press key 'y' to get Ray-Intersec object
  * Press key 'f' to apply force to the raycasted body
  * Press key 'g' to apply impulse to the raycasted body
+ * Press key 'm' to toggle mesh debugger
+ * Press key 'y' to toggle mesh labels
  */
 
 import Engine from '../libs/ECC-CGP-Engine';

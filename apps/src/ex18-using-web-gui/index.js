@@ -276,6 +276,8 @@ function callback( args ) {
         WebGui.updateVector( Vec2, bodyB.threemesh.position );
         WebGui.updateVector( Vec3, bodyB.threemesh.position );
         WebGui.updateVector( Vec4, bodyB.quaternion );
+
+       
     }
 
     /**
@@ -286,7 +288,14 @@ function callback( args ) {
         WebGui.updatePlotter(Plot2, bodyB.threemesh.rotation );
         WebGui.updatePlotter(Plot3, bodyB.quaternion );
     }
+
+    /**
+     * Update oscilloscope
+     */
+    if(oscilloscope)
+        oscilloscope.addData( [ bodyB.quaternion.x, bodyB.quaternion.y, bodyB.quaternion.z, bodyB.quaternion.w ] );
 }
+
 
 
 /**
@@ -375,7 +384,7 @@ const Plot3  = WebGui.createPlotter( "Quaternion Rotation", 2, 480, "yellow", [1
 /**
  * Create a blank container
  */
-const btnc = WebGui.createContainer('Single-Column Buttons', 'pink', 2, 680);
+const btnc = WebGui.createContainer('Single-Column Buttons', 'pink', 700, 2);
 
 /**
  * Single-Column Buttons
@@ -414,3 +423,10 @@ const btnc2 = WebGui.createContainer('Single-Row Buttons', 'red', 300, 60);
 for(let i=0; i<btnTypes.length; i++) {
     WebGui.createButton(btnc2, btnNames[i], i, btnTypes[i], buttonActions, {inline: true});
 }
+
+
+/**
+ * Oscilloscope
+ */
+const oscContainer = WebGui.createContainer('Oscilloscope', '', 300, 120);
+const oscilloscope = WebGui.createOscilloscope( oscContainer, 380, 100, 200 );

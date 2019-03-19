@@ -18,6 +18,9 @@ import { EngineCore, CANNON, THREE, Utils } from './EngineCore';
 export { Engine, EngineCore, CANNON, THREE, Utils };
 
 
+/**
+ * Engine Class
+ */
 export default class Engine {
 
     /**
@@ -76,6 +79,13 @@ export default class Engine {
      */
     static get Vec2(){
         return CANNON.Vec2;
+    }
+
+    /**
+     * Retuen Zero vector (0, 0, 0)
+     */
+    static get ZeroVector(){
+        return new CANNON.Vec3(0, 0, 0);
     }
 
     /**
@@ -258,7 +268,7 @@ export default class Engine {
 
     /**
      * Returns graphics object
-     * @return graphics
+     * @return Graphics
      */
     getGraphics() {
         return this.core.graphics; 
@@ -266,7 +276,7 @@ export default class Engine {
 
     /**
      * Returns the current scene object
-     * @return THREE.Scene
+     * @return Graphics.Scene
      */
     getScene() {
         return this.core.graphics.scene;
@@ -274,15 +284,26 @@ export default class Engine {
 
     /**
      * Returns the main camera object
-     * @return THREE.Camera
+     * @return Graphics.Camera
      */
     getCamera() {
         return this.core.graphics.camera;
     }
 
     /**
+     * Set camera position and update control
+     * @param {number} x x position
+     * @param {number} y y position
+     * @param {number} z z position 
+     */
+    setCameraPosition( x, y, z ) {
+        this.core.graphics.setCameraPosition( x, y, z );
+        return this;   
+    }
+
+    /**
      * Returns the current renderer object
-     * @return THREE.Renderer
+     * @return Graphics.Renderer
      */
     getRenderer() {
         return this.core.graphics.renderer;
@@ -290,7 +311,7 @@ export default class Engine {
 
     /**
      * Returns current used control
-     * @return THREE.Controls
+     * @return Graphics.Control
      */
     getControl() {
         return this.core.graphics.control;
@@ -302,6 +323,7 @@ export default class Engine {
 
     /**
      * Show grids helper
+     * @return this
      */
     showGrids() {
         this.core.graphics.addGrids();
@@ -310,6 +332,7 @@ export default class Engine {
 
     /**
      * Hide grids helper
+     * @return this
      */
     hideGrids() {
         this.core.graphics.removeGrids();
@@ -318,6 +341,7 @@ export default class Engine {
 
     /**
      * Toggle grids visibility
+     * @return this
      */
     toggleGrids() {
         this.core.graphics.toggleGrids();
@@ -326,6 +350,7 @@ export default class Engine {
 
     /**
      * Show axes helper
+     * @return this
      */
     showAxes() {
         this.core.graphics.addAxes();
@@ -334,6 +359,7 @@ export default class Engine {
 
     /**
      * Hide axes helper
+     * @return this
      */
     hideAxes() {
         this.core.graphics.removeAxes();
@@ -342,6 +368,7 @@ export default class Engine {
 
     /**
      * Toggle axes visibility
+     * @return this
      */
     toggleAxes() {
         this.core.graphics.toggleAxes();
@@ -435,6 +462,16 @@ export default class Engine {
     }
 
     /**
+     * Set sub-step of physics solver
+     * @param {number} steps number of steps of physics solver
+     */
+    setSubSteps( steps ) {
+        if( typeof(steps) == "number" ) {
+            this.core.physics.options.subSteps = steps;
+        }
+    }
+
+    /**
      * Creates and returns ground material. The created material is added to the physics world internally
      * @param {number} friction     Ground friction
      * @param {number} restitution  Ground restitution
@@ -497,6 +534,15 @@ export default class Engine {
     setBodyToDynamic( body, mass ) {
         this.core.physics.changeBodyToDynamic( body, mass );
         return this;
+    }
+
+    /**
+     * Create body from mesh
+     * @param {THREE.Mesh} mesh mesh object 
+     * @returns CANNON.Body
+     */
+    createBodyFromMesh( mesh ) {
+        return this.core.physics.createBodyFromMesh( mesh );
     }
 
     /**
@@ -583,12 +629,15 @@ export default class Engine {
 
 
     /**
-     * Adds axes to the spefied mesh
-     * @param {THREE.Mesh} mesh THREE Mesh
+     * Adds axes to the mesh
+     * @param {THREE.Mesh} mesh THREE Mesh or string
      * @param {number} size Axes size
      */
     addAxesToMesh( mesh, size ) {
-        this.core.graphics.addAxesToMesh( mesh, size );
+        if( mesh instanceof THREE.Mesh || mesh instanceof THREE.Group )
+            this.core.graphics.addAxesToMesh( mesh, size );
+        else
+            this.core.graphics.addAxesToMesh( this.getMeshByName(mesh), size );   
         return this;
     }
 
@@ -605,10 +654,36 @@ export default class Engine {
 
     /**
      * Removes axes from the spefied mesh
-     * @param {THREE.Mesh} mesh THREE Mesh
+     * @param {THREE.Mesh} mesh THREE Mesh or mesh name
      */
     removeAxesFromMesh( mesh ) {
-        this.core.graphics.removeAxesFromMesh( mesh );
+        if( mesh instanceof THREE.Mesh  || mesh instanceof THREE.Group )
+            this.core.graphics.removeAxesFromMesh( mesh );
+        else
+            this.core.graphics.removeAxesFromMesh( this.getMeshByName( mesh ) );
+        return this;
+    }
+
+
+    toggleAxesOfMesh( mesh, size ) {
+        let target = undefined;
+        if( mesh instanceof THREE.Mesh || mesh instanceof THREE.Group ) {
+            target = mesh;
+        }
+        else {
+            target = this.getMeshByName( mesh );
+        }
+        // console.log( ">>>" );
+        // console.log( target );
+        // console.log( "<<<" );
+
+        for(let i=0; i<target.children.length; i++) {
+            if( target.children[i].name.includes('_helper__axes_')) {
+                this.removeAxesFromMesh( target );
+                return this;
+            } 
+        }
+        this.addAxesToMesh( target, size );
         return this;
     }
 
@@ -687,7 +762,6 @@ export default class Engine {
      * Check key pressed, return true if the desired key is pressed
      * @param {string} key      a character or key name
      * @param {number} interval time between each key pressed
-     * @return boolean
      */
     getKeyDown( key, interval ) {
         return this.core.keyboard.getKeyDown( key, interval );
@@ -720,16 +794,14 @@ export default class Engine {
     /**********************************/
 
     /**
-     * Return Ray of the raycasting operation
-     * @return object { mesh, intersecs, ray }
+     * Return Ray object { mesh, intersecs, ray } of the raycasting operation
      */
     getRay() {
         return this.getRaycast().ray;
     }
 
     /**
-     * Return RayDirection of the raycasting operation
-     * @return ray.direction
+     * Return ray.direction of the raycasting operation
      */
     getRayDirection() { 
         const ray = this.getRay();
@@ -738,8 +810,7 @@ export default class Engine {
     }
 
     /**
-     * Return RayOrigin of the raycasting operation
-     * @return ray.origin
+     * Return ray.origin of the raycasting operation
      */
     getRayOrigin() {
         const ray = this.getRay();
@@ -753,8 +824,7 @@ export default class Engine {
     /**********************************/
 
     /**
-     * Return RayIntersec of the raycasting operation
-     * @return intersect
+     * Return intersect of the raycasting operation
      */
     getRayIntersec() {
         const raycast = this.getRaycast();
@@ -762,8 +832,7 @@ export default class Engine {
     }
 
     /**
-     * Return RayDistance of the raycasting operation
-     * @return intersect.distance
+     * Return intersect.distance of the raycasting operation
      */
     getRayDistance() {
         const raycast = this.getRaycast();
@@ -773,8 +842,7 @@ export default class Engine {
     }
 
     /**
-     * Return RayPoint of the raycasting operation
-     * @return intersect.point
+     * Return intersect.point of the raycasting operation
      */
     getRayPoint() {
         const raycast = this.getRaycast();
@@ -789,8 +857,7 @@ export default class Engine {
     /**********************************/
 
     /**
-     * Return RayObject of the raycasting operation
-     * @return intersect.object
+     * Return intersect.object of the raycasting operation
      */
     getRayMesh() {
         const raycast = this.getRaycast();
@@ -803,7 +870,6 @@ export default class Engine {
 
     /**
      * Returns a rigid body of the raycasting operation
-     * @return CANNON.Body
      */
     getRayBody() {
         const raycast = this.getRaycast();
@@ -975,7 +1041,6 @@ export default class Engine {
     /**
      * Returns label of the provided mesh
      * @param {THREE.Mesh} mesh target mesh
-     * @return CSS2DObject label
      */
     getLabel( mesh ) {
         return this.core.labelRenderer.getLabel( mesh );
@@ -1050,22 +1115,43 @@ export default class Engine {
         return this;
     }
 
-    /**********************************************************************************************************/
-    /*  Asset Loader      AssetLoader       AssetLoader       AssetLoader       AssetLoader       AssetLoader */
-    /**********************************************************************************************************/
+    //!*********************************************************************************************************
+    //!  Asset Loader      AssetLoader       AssetLoader       AssetLoader       AssetLoader       AssetLoader *
+    //!*********************************************************************************************************
     
     /**
-     * Load asset, the special model. This model includes actor/character and colliders
-     * @param {string} model GLTF file name
-     * @param {*} callback   callback function
+     * Loads asset, the special model. This model includes actor/character and colliders.
+     * @param {string}   model      GLTF file name
+     * @param {function} callback   callback function
      * @return Promise
      */
     loadAssets( model, callback ) {
+        
         return this.core.assetLoader.load( model, callback );
     }
 
     /**
-     * Loads models, adds to scene, creates rigid-body and applies reflection-map
+     * Clone asset
+     * @param {THREE.Mesh|THREE.Group} srcAsset prototype object
+     * @param {string} clonedName name of cloned object
+     */
+    copyAsset( srcAsset, clonedName ) {
+        return this.core.assetLoader.copyAsset( srcAsset, clonedName );
+    }
+
+    /**
+     * Load complex actor with complex colliders. All colliders are applied by LockConstraint to the actor body
+     * @param {string} model file name
+     * @param {function} callback callback function
+     * @return Promise
+     */
+    loadComplex( model, callback ) {
+        
+        return this.core.assetLoader.loadComplex( model, callback );
+    }
+
+    /**
+     * Loads models, adds to scene, creates rigid-body and applies reflection-map.
      * @param {string} model file name
      * @param {*} callback   callback function
      * @return Promise
@@ -1074,4 +1160,53 @@ export default class Engine {
         return this.core.loadModel( model, callback );
     }
 
+
+    /**
+     * Clone mesh or group
+     * @param {THREE.Mesh | THREE.Group} srcMesh sorce object (mesh or group)
+     * @param {string} clonedName name of cloned mesh or group
+     */
+    cloneMesh( srcMesh, clonedName ) {
+        
+        let actor;
+        clonedName = clonedName ? clonedName : '';
+
+        //console.log( srcMesh );
+        
+        if( srcMesh instanceof THREE.Group ) {
+            actor = new THREE.Group();
+            srcMesh.traverse(c => {
+                
+                if( c instanceof THREE.Mesh ) {
+                    let mesh = new THREE.Mesh( c.geometry, c.material );
+                    mesh.name = c.name;
+                    mesh.position.copy(c.position);
+                    mesh.rotation.copy(c.rotation);
+                    mesh.quaternion.copy(c.quaternion); 
+                    actor.add( mesh );
+                }
+            });
+            actor.name = clonedName;
+            actor.position.copy(srcMesh.position);
+            actor.rotation.copy(srcMesh.rotation);
+            actor.quaternion.copy(srcMesh.quaternion); 
+            actor.scale.copy(srcMesh.scale);
+        }else {
+            actor  = new THREE.Mesh( srcMesh.geometry, srcMesh.material.clone() ); 
+            actor.name = clonedName;
+            actor.position.copy(srcMesh.position);
+            actor.rotation.copy(srcMesh.rotation);
+            actor.quaternion.copy(srcMesh.quaternion);   
+            actor.scale.copy(srcMesh.scale); 
+        }
+        return actor;
+    }
+
+    /**
+     * Remove body and its components (threemesh and its children) from the world and scene
+     * @param {CANNON.Body} body 
+     */
+    removeBody( body ) {
+        this.core.physics.removeFarObjects([body]);
+    }
 }
