@@ -18,7 +18,7 @@ const engine = new Engine();
 engine.init( {
     envPath: 'images/bridge',   //!! Environmant directory
     models: [ 
-        'models/scene001.gltf', //!! Ground and walls
+        'models/scene000.gltf', //!! Ground and walls
     ]
 }).then( () => {
     userInit();

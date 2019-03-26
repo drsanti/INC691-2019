@@ -13,10 +13,8 @@
 */
 
 
-import { EngineCore, CANNON, THREE, Utils } from './EngineCore';
-
-export { Engine, EngineCore, CANNON, THREE, Utils };
-
+import { EngineCore, CANNON, THREE, Utils, SPE } from './EngineCore';
+export { Engine, EngineCore, CANNON, THREE, Utils, SPE };
 
 /**
  * Engine Class
@@ -404,7 +402,7 @@ export default class Engine {
         return this.core.graphics.spotLights;
     }
 
-     /**
+    /**
      * Returns array of directional lights
      * @return Array of THREE.DirectionalLight
      */
@@ -498,6 +496,7 @@ export default class Engine {
      * @return CANNON.Body
      */
     getBodyByMeshName( name ) {
+        //console.log("Name: " + name);
         return this.core.physics.getBodyByMeshName( name );
     }
 
@@ -673,9 +672,6 @@ export default class Engine {
         else {
             target = this.getMeshByName( mesh );
         }
-        // console.log( ">>>" );
-        // console.log( target );
-        // console.log( "<<<" );
 
         for(let i=0; i<target.children.length; i++) {
             if( target.children[i].name.includes('_helper__axes_')) {
@@ -828,7 +824,8 @@ export default class Engine {
      */
     getRayIntersec() {
         const raycast = this.getRaycast();
-        return raycast.intersect;
+        if( raycast ) return raycast.intersect;
+        return undefined;
     }
 
     /**
@@ -893,6 +890,7 @@ export default class Engine {
         if(!raycast) return undefined;
         const direction = new CANNON.Vec3(raycast.ray.direction.x,   raycast.ray.direction.y,   raycast.ray.direction.z);
         const point     = new CANNON.Vec3(raycast.intersect.point.x, raycast.intersect.point.y, raycast.intersect.point.z);
+        //console.log( raycast.mesh.name );
         const body = this.getBodyByMeshName( raycast.mesh.name );
         if( !body ) return
         if( type === 0 ) {
