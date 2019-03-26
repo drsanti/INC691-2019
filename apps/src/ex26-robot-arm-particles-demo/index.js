@@ -11,7 +11,22 @@
 import {Engine, SPE } from '../libs/ECC-CGP-Engine';
 import WebGui from '../libs/ECC-Web-Gui';
 
-const engine = new Engine();
+const engine = new Engine({
+    grahics:{
+        stats:{
+            enabled: false
+        },
+        ambientLight: {
+            intensity: 0
+        },
+        pointLight:{
+            enabled: true
+        },
+        directionalLight:{
+            enabled: false
+        }
+    }
+});
 
 engine.init( {
     envPath: 'images/snow',
@@ -20,6 +35,7 @@ engine.init( {
     ]
 }).then( () => {
     userInit();
+    console.log(engine.getDefaultOptions())
     engine.setCameraPosition(40, 30, 60);
     engine.start( callback );
 });
@@ -189,8 +205,8 @@ function Plotter_Analyzer_Update( arg ) {
         Plotter_Analyzer.oscilloscope = WebGui.createOscilloscope( Plotter_Analyzer.oscContainer, 380, 100, {points: 300, mainGrids: false} );
         
         Plotter_Analyzer.oscilloscope.setMin   (null,   0  );
-        Plotter_Analyzer.oscilloscope.setMax   (null,  +20 );
-        Plotter_Analyzer.oscilloscope.setOffset(null,  -10 ); //!! -(max/2)
+        Plotter_Analyzer.oscilloscope.setMax   (null,  +40 );
+        Plotter_Analyzer.oscilloscope.setOffset(null,  -20 ); //!! -(max/2)
 
         //Plotter_Analyzer.oscilloscope.setEnable(2, false);
         //Plotter_Analyzer.oscilloscope.setEnable(3, false);
