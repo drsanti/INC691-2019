@@ -18,7 +18,7 @@ const engine = new Engine();
 engine.init( {
     envPath: 'images/bridge',   //!! Environmant directory
     models: [ 
-        'models/scene001.gltf', //!! Ground and walls
+        'models/scene000.gltf', //!! Ground and walls
     ]
 }).then( () => {
     userInit();
@@ -232,6 +232,11 @@ function keyAction() {
         if(GainL < 1.0) GainL += DIR_RES;
         if(GainR < 1.0) GainR += DIR_RES;
         updateSpeed( );
+    }
+
+    //!!
+    if( engine.getKeyDown( 'd', 1000 ) ) {
+        engine.toggleDebug();
     }
 }
 
