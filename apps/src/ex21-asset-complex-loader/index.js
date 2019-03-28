@@ -61,7 +61,7 @@ function userInit() {
     }
     else if(METHOD === 1 ) {
         engine.loadComplex(MODEL_FILE).then( (asset) => {
-        console.log( asset );
+            console.log( asset );
         });
     } 
 }

@@ -8,23 +8,28 @@
 
 
 
-import {Engine, SPE } from '../libs/ECC-CGP-Engine';
+import {Engine, SPE} from '../libs/ECC-CGP-Engine';
 import WebGui from '../libs/ECC-Web-Gui';
 
 const engine = new Engine({
-    grahics:{
-        stats:{
-            enabled: false
-        },
+    graphics:{
+        sceneType:"env",
         ambientLight: {
-            intensity: 0
-        },
-        pointLight:{
             enabled: true
         },
-        directionalLight:{
+        pointLight: {
+            enabled: true,
+            intensity: 5
+        },
+        directionalLight: {
             enabled: false
         }
+    },
+    physics:{
+        debug:{
+            enabled: false
+        },
+       
     }
 });
 
@@ -35,8 +40,7 @@ engine.init( {
     ]
 }).then( () => {
     userInit();
-    console.log(engine.getDefaultOptions())
-    engine.setCameraPosition(40, 30, 60);
+    engine.setCameraPosition(0, 10, 40);
     engine.start( callback );
 });
 
@@ -110,15 +114,22 @@ RobotArm.prototype.update = function() {
 
 
 //!! Global variables
-
+let eccLogo;
 let Robot1, Robot2, Robot3, Robot4;
 function userInit() {
     Robot1 = new RobotArm( engine, -10, 0, -10 );
     Robot2 = new RobotArm( engine, -10, 0, +10 );
     Robot3 = new RobotArm( engine, +10, 0, -10 );
     Robot4 = new RobotArm( engine, +10, 0, +10 );
+
+    eccLogo = engine.getMeshByName("ecclogo");
+    eccLogo.rotation.x = Math.PI/2; 
+    eccLogo.scale.set( 1.2, 1.2, 1.2);
+    eccLogo.position.set(0, 0, 0);
 }
 
+
+let beta = 0;
 function callback( arg ) {
     Robot1.update();
     Robot2.update();
@@ -145,24 +156,31 @@ function callback( arg ) {
 
     Plotter_Analyzer_Update(arg);
     plotter();
+    eccLogo.rotation.x = Math.cos(beta/4)*Math.PI*2;
+    eccLogo.rotation.y = Math.sin(beta)*Math.PI*2;
+    beta += 0.01;
 }
 
 /**
  * Particle class 
  */ 
-function Particles(engine, parent) {
+function Particles( engine ) {
 
+    const PARTICLE_COUNT = 1500;
     const THREE = Engine.GRAPHICS;
+
     this.particleGroup = null;
     this.emitter = null;
    
     this.particleGroup = new SPE.Group({
         texture: {
-            value: THREE.ImageUtils.loadTexture('images/particles/smokeparticle.png')
-        }
+            value: new THREE.TextureLoader().load( 'images/particles/smokeparticle.png' )
+        },
+        maxParticleCount: PARTICLE_COUNT
     });
 
     this.emitter = new SPE.Emitter({
+        particleCount: PARTICLE_COUNT,
         maxAge: 3,
         position: {
             value: new THREE.Vector3(0, 0, 0)
@@ -182,13 +200,11 @@ function Particles(engine, parent) {
         size: {
             value: [ 1 + Math.random(), 0 ]
         },
-        particleCount: 1500
+       
     });
     this.particleGroup.addEmitter( this.emitter );
     engine.getScene().add( this.particleGroup.mesh );
 }
-
-
 
 //!! Plotter_Analyzer
 let Plotter_Analyzer = {
@@ -205,11 +221,11 @@ function Plotter_Analyzer_Update( arg ) {
         Plotter_Analyzer.oscilloscope = WebGui.createOscilloscope( Plotter_Analyzer.oscContainer, 380, 100, {points: 300, mainGrids: false} );
         
         Plotter_Analyzer.oscilloscope.setMin   (null,   0  );
-        Plotter_Analyzer.oscilloscope.setMax   (null,  +40 );
-        Plotter_Analyzer.oscilloscope.setOffset(null,  -20 ); //!! -(max/2)
+        Plotter_Analyzer.oscilloscope.setMax   (null,  +10 );
+        Plotter_Analyzer.oscilloscope.setOffset(null,  -5 ); //!! -(max/2)
 
-        //Plotter_Analyzer.oscilloscope.setEnable(2, false);
-        //Plotter_Analyzer.oscilloscope.setEnable(3, false);
+        Plotter_Analyzer.oscilloscope.setEnable(2, false);
+        Plotter_Analyzer.oscilloscope.setEnable(3, false);
     }
     const tg = arg.graphics.processingTime;
     const tp = arg.physics.processingTime;
@@ -235,6 +251,3 @@ function plotter( ) {
     }
     Plotter.oscilloscope.addData([ Robot1.pivots[0].quaternion.y , Robot1.pivots[1].quaternion.z, Robot1.pivots[2].quaternion.z,Robot1.pivots[3].quaternion.z ]);
 }
-
-
-

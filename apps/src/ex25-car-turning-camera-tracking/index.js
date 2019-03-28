@@ -233,6 +233,11 @@ function keyAction() {
         if(GainR < 1.0) GainR += DIR_RES;
         updateSpeed( );
     }
+
+    //!!
+    if( engine.getKeyDown( 'd', 1000 ) ) {
+        engine.toggleDebug();
+    }
 }
 
 /*************************************************************************************************/
