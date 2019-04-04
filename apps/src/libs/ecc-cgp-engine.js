@@ -30,6 +30,49 @@ export default class Engine {
         this.core = new EngineCore( options );
     }
 
+
+    /**
+     * Initialise the core engine. After the engine is iniialized, it will return the Promise and execute the provided callback
+     * @param {object}    options   initialization options
+     * @param {function}  callback  callback function will be called after all files are loaded
+     * @return Promise
+     */
+    init( options, callback ){
+        //return this.core.init( options, callback );
+        // this.core.init( options ).then( (args) => {
+        //     console.log( args );
+        // });
+
+        return new Promise( (resolve, reject) =>{
+            this.core.init( options, callback ).then( ( args ) => {
+                resolve( args );
+                if(callback) {
+                    callback( args );
+                }
+
+               
+                this.scene = args.Graphics.scene;
+                this.world = args.Physics.world;
+
+                this.graphics = args.Graphics;
+                this.physics  = args.Physics;
+
+                this.options = options;
+
+                console.log( this );
+            });    
+        });
+
+
+        // this.scene = this.core.graphics.scene;
+        // this.world = this.core.physics.world;
+
+        // this.graphics = this.core.graphics;
+        // this.physics  = this.core.physics;
+
+        // this.options = options;
+    }
+
     /**
      * THREE
      */
@@ -176,16 +219,14 @@ export default class Engine {
         return new CANNON.Vec3(0, -1, 0).mult(scale===undefined?1:scale); 
     }
 
-
     /**
-     * Initialise the core engine. After the engine is iniialized, it will return the Promise and execute the provided callback
-     * @param {object}    options   initialization options
-     * @param {function}  callback  callback function will be called after all files are loaded
-     * @return Promise
+     * Loads texture
+     * @param {string} path [ath to image/texture
      */
-    init( options, callback ){
-        return this.core.init( options, callback );
+    loadImage( path ) {
+        return new THREE.TextureLoader().load( path );
     }
+
 
 
     /**
@@ -1206,5 +1247,59 @@ export default class Engine {
      */
     removeBody( body ) {
         this.core.physics.removeFarObjects([body]);
+    }
+
+    /**
+     * Returns delta time in milliseconds
+     */
+    getDeltaTime() {
+        return this.core.properties.timing.deltaTime;
+    }
+    
+    /**
+     * Returns processing time of graphics in milliseconds
+     */
+    getGraphicsTime() {
+        return this.core.properties.graphics.processingTime;
+    }
+
+    /**
+     * Returns processing time of physics in milliseconds
+     */
+    getPhysicsTime() {
+        return this.core.properties.physics.processingTime;
+    }
+
+    /**
+     * Returns total processing time (graphics + physics + etc.) in milliseconds
+     */
+    getProcessingTime() {
+        return this.core.properties.timing.processingTime;
+    } 
+
+    /**
+     * Returns number of frames per second
+     */
+    getFrameRate() {
+        return 1000.0/this.core.properties.timing.deltaTime;
+    }
+
+    /**
+     * Return processing load in percent
+     */
+    getProcessingLoad( target ) {
+        //!! 100% = 1000/60 mS
+        if( target === 'graphics' ) {
+            return 100* this.core.properties.graphics.processingTime/(1000.0/60.0);
+        }
+        else if(target === 'physics' ) {
+            return 100*this.core.properties.physics.processingTime/(1000.0/60.0);
+        }
+        else if(target === 'total' || !target) {
+            return 100*this.core.properties.timing.processingTime/(1000.0/60.0);
+        }
+        else {
+            throw "The target \"" + target + "\" is not supported!";
+        }
     }
 }
