@@ -221,6 +221,7 @@ function Plotter_Analyzer_Update( arg ) {
         Plotter_Analyzer.oscilloscope = WebGui.createOscilloscope( Plotter_Analyzer.oscContainer, 380, 100, {points: 300, mainGrids: false} );
         
         Plotter_Analyzer.oscilloscope.setMin   (null,   0  );
+<<<<<<< HEAD
         Plotter_Analyzer.oscilloscope.setMax   (null,  +20 );
         Plotter_Analyzer.oscilloscope.setOffset(null,  -10 ); //!! -(max/2)
 
@@ -231,6 +232,18 @@ function Plotter_Analyzer_Update( arg ) {
     const tp = engine.getPhysicsTime();//arg.physics.processingTime;
     const ta = tg + tp; 
     const td = engine.getDeltaTime();
+=======
+        Plotter_Analyzer.oscilloscope.setMax   (null,  +10 );
+        Plotter_Analyzer.oscilloscope.setOffset(null,  -5 ); //!! -(max/2)
+
+        Plotter_Analyzer.oscilloscope.setEnable(2, false);
+        Plotter_Analyzer.oscilloscope.setEnable(3, false);
+    }
+    const tg = arg.graphics.processingTime;
+    const tp = arg.physics.processingTime;
+    const ta = tg + tp; 
+    const td = arg.timing.deltaTime;
+>>>>>>> 39c61002ce4c73d1674538229de26bf574bff6ae
     Plotter_Analyzer.oscilloscope.addData([ tg, tp, ta, td ]);
 }
 

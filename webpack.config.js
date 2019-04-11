@@ -23,7 +23,9 @@
 // const __exdir__  = 'ex22-rigid-body-cloning-chain-constraints';
 // const __exdir__  = 'ex23-hinge-constraint-4-wheels';
 // const __exdir__  = 'ex24-wheel-driving-motors';
-const __exdir__  = 'ex25-car-turning-camera-tracking';
+// const __exdir__  = 'ex25-car-turning-camera-tracking';
+
+const __exdir__  = 'ex26-robot-arm-particles-demo';
 
 
 //!!
@@ -31,6 +33,7 @@ const __exdir__  = 'ex25-car-turning-camera-tracking';
 const __mode__   = 'app';
 //!!
 //!!
+
 
 const config = {
   app: {
