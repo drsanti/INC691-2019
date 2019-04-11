@@ -59,7 +59,7 @@ export default class Engine {
 
                 this.options = options;
 
-                console.log( this );
+                //console.log( this );
             });    
         });
 
@@ -391,8 +391,8 @@ export default class Engine {
      * Show axes helper
      * @return this
      */
-    showAxes() {
-        this.core.graphics.addAxes();
+    showAxes( options ) {
+        this.core.graphics.addAxes( options );
         return this;
     }
 
@@ -1090,8 +1090,8 @@ export default class Engine {
      * @param {THREE.Mesh} mesh  target mesh
      * @param {string}     label label/text to be displayed on the mesh
      */
-    updateLabel( mesh, label ) {
-        this.core.labelRenderer.updateLabel( mesh, label );
+    setLabelText( mesh, label ) {
+        this.core.labelRenderer.setLabelText( mesh, label );
         return this;
     }
 
@@ -1150,8 +1150,13 @@ export default class Engine {
      * Toggle labels visibility
      */
     toggleLabels() {
-        this.core.labelRenderer.toggle();
-        return this;
+        return this.core.labelRenderer.toggle();
+        //return this;
+    }
+
+    setLabelPosition( mesh, position ) {
+        this.core.labelRenderer.setLabelPosition( mesh, position );
+        return this; 
     }
 
     //!*********************************************************************************************************
