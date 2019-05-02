@@ -22,18 +22,16 @@
 // const __exdir__  = 'ex21-asset-complex-loader';
 // const __exdir__  = 'ex22-rigid-body-cloning-chain-constraints';
 // const __exdir__  = 'ex23-hinge-constraint-4-wheels';
-// const __exdir__  = 'ex24-wheel-driving-motors';
+// const __exdir__  = 'ex24-wheels-motors-driving';
 // const __exdir__  = 'ex25-car-turning-camera-tracking';
+// const __exdir__  = 'ex27-simple-robot-arm-control';
+const __exdir__  = 'ex28-wheel-bot-project-day';
 
-const __exdir__  = 'ex26-robot-arm-particles-demo';
 
-
-//!!
 //!!
 const __mode__   = 'app';
 //!!
 //!!
-
 
 const config = {
   app: {
@@ -57,7 +55,7 @@ module.exports = {
   devServer: {
     contentBase: path.join( __dirname, config.app.root + '/public' ),
     compress: true,
-    port: 9001,
+    port: 9000,
   },
   module: {
     rules: [

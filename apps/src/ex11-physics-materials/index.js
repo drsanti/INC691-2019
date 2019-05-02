@@ -66,12 +66,12 @@ function uerInit( params ) {
 
     //!! Create ground material and add to the physics world
     const groundFriction    = 0.1;
-    const groundRestitution = 0.5;
+    const groundRestitution = 0.0;
     const groundMaterial = engine.createGroundMaterial( groundFriction, groundRestitution );
 
     //!! Create object material and add to the physics world
     const objectFriction    = 0.1;
-    const objectRestitution = 0.5;
+    const objectRestitution = 0.0;
     const objectMaterial = engine.createObjectMaterial( objectFriction, objectRestitution, groundMaterial );
 
     //!! Apply the created materials to the rigid bodies

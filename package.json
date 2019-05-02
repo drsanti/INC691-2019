@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "webpack": "webpack --watch --mode development --inline --colors --progress --display-error-details --display-cached",
-    "start": "webpack-dev-server --inline --watch --colors"
+    "start": "webpack-dev-server --inline --watch --colors",
+	"io": "cd apps && node ioserver.js"
   },
   "keywords": [
     "3D",
