@@ -1,0 +1,39 @@
+{
+    "tags": {
+      "allowUnknownTags": true
+    },
+    "source": {
+      "include": [
+        "src/libs"
+      ],
+      "exclude": [
+        ".git",
+        ".meteor",
+        "node_modules",
+        "./src/libs/ui"
+      ],
+      "includePattern": ".+\\.js(x|doc)?$"
+    },
+    "plugins": ["plugins/markdown"],
+    "opts": {
+      "encoding": "utf8",
+      "template": "node_modules/minami",
+      "destination": "apps/src/libs/docs",
+      "recurse": true,
+      "verbose": true
+    },
+    "markdown": {
+      "parser": "gfm",
+      "hardwrap": true
+    },
+    "templates": {
+      "name": "Graphics & Physics Engines with WebGui Tools",
+      "footerText": "Dr.Santi Nuratch, ECC-Lab, INC-KMUTT",
+      "cleverLinks": true,
+      "monospaceLinks": true,
+      "default": {
+        "outputSourceFiles": true,
+        "includeDate": true
+      }
+    }
+  }

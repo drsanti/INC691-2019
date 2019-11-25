@@ -1174,6 +1174,18 @@ export default class Engine {
         return this.core.assetLoader.load( model, callback );
     }
 
+    
+    /**
+     * Loads vihicle, the special model. This model includes actors/meshes and their colliders.
+     * @param {string}   model      GLTF file name
+     * @param {function} callback   callback function
+     * @return Promise
+     */
+    loadVihicle( model, callback ) {
+        
+        return this.core.assetLoader.loadVihicle( model, callback );
+    }
+
     /**
      * Clone asset
      * @param {THREE.Mesh|THREE.Group} srcAsset prototype object

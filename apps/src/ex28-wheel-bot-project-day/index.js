@@ -20,7 +20,7 @@ const engine = new Engine({
         world: {
             defaultContactMaterial:{
                 contactEquationRelaxation: 1,
-                contactEquationStiffness: 5000  
+                contactEquationStiffness: 50000  
             }
         }
     },
@@ -36,9 +36,11 @@ engine.init( {
     models: [ 
         'models/scene001.gltf',
     ]
-}).then( () => {
+}).then( ( m ) => {
+    
+    
     userInit();
-    engine.start( callback );
+    
 });
 
 
@@ -52,7 +54,7 @@ const MODEL_BOT_WHEEL_B = 'models/projectDay/bot_wheel_B.gltf';
 
 function userInit() {
     engine.setCameraPosition(-3, 5, -15); 
-    engine.showAxes();
+    //engine.showAxes();
     loadRobotAssets();
 }
 
@@ -69,15 +71,15 @@ function loadRobotAssets() {
     engine.loadAssets( MODEL_BOT_BODY ).then( function ( bb ) {
 
         robotBody = bb.body;
-        robotBody.mass = 0.5;
+        robotBody.mass = 5;
 
         engine.loadAssets( MODEL_BOT_WHEEL_L ).then( function ( wl ) {
             wheelLeft = wl.body;
-            wheelLeft.mass = 2;
+            wheelLeft.mass = 1;
 
             engine.loadAssets( MODEL_BOT_WHEEL_R ).then( function ( wr ) {
                 wheelRight = wr.body;
-                wheelRight.mass = 2;
+                wheelRight.mass = 1;
 
                 engine.loadAssets( MODEL_BOT_WHEEL_F ).then( function ( wf ) {
                     wheelFront = wf.body;
@@ -88,6 +90,7 @@ function loadRobotAssets() {
                         wheelBack.mass = 0.5;
     
                         buildRobot();
+                        engine.start( callback );
                     });
                 });
 
@@ -102,7 +105,7 @@ let ConstraintArray = [];
 function buildRobot() {
     //!! Left-Wheel
     ConstraintArray.push( new Engine.PHYSICS.HingeConstraint( robotBody, wheelLeft, {
-        pivotA: new Engine.Vec3( +1.45, -0.1, +0 ), 
+        pivotA: new Engine.Vec3( +1.55, -0.05, +0 ), 
         axisA:  new Engine.Vec3( +1.0, +0.0, +0.0 ),
 
         pivotB: new Engine.Vec3( +0.0, +0.0, +0.0 ), 
@@ -111,7 +114,7 @@ function buildRobot() {
 
     //!! Right-Wheel
     ConstraintArray.push( new Engine.PHYSICS.HingeConstraint( robotBody, wheelRight, {
-        pivotA: new Engine.Vec3( -1.45, -0.1, +0 ), 
+        pivotA: new Engine.Vec3( -1.55, -0.05, +0 ), 
         axisA:  new Engine.Vec3( +1.0, +0.0, +0.0 ),
 
         pivotB: new Engine.Vec3( +0.0, +0.0, +0.0 ), 
@@ -136,21 +139,31 @@ function buildRobot() {
         axisB:  new Engine.Vec3( -1.0, +0.0, +0.0 )
     }));
 
+    //!! Constraints
     engine.addConstraint( ConstraintArray[0] );
     engine.addConstraint( ConstraintArray[1] );
-
     engine.addConstraint( ConstraintArray[2] );
-    engine.addConstraint( ConstraintArray[3] );
+   engine.addConstraint( ConstraintArray[3] );
 
 
+    //!! Collission Filter
+    // const G1 = 1; 
+    // const G2 = 2;
+    // let ground = engine.getBodyByMeshName("CubeStaticGround");
+    // ground.collisionFilterGroup = G1;
+    // ground.collisionFilterMask  = G2;
+    // wheelLeft.collisionFilterGroup  = G2;
+    // wheelRight.collisionFilterGroup = G2;
+    // wheelLeft.collisionFilterMask   = G1;
+    // wheelRight.collisionFilterMask  = G1;
 
     //!! Create ground material and add to the physics world
-    const groundFriction    = 0.01;
+    const groundFriction    = 0.5;
     const groundRestitution = 0.0;
     const groundMaterial = engine.createGroundMaterial( groundFriction, groundRestitution );
 
     //!! Create object material and add to the physics world
-    const objectFriction    = 0.2;
+    const objectFriction    = 0.7;
     const objectRestitution = 0.0;
     const objectMaterial = engine.createObjectMaterial( objectFriction, objectRestitution, groundMaterial );
 
@@ -163,11 +176,11 @@ function buildRobot() {
     wheelRight.material = objectMaterial;
 
 
-    const fbMat = engine.createObjectMaterial( 0.05, 0, groundMaterial );
+    const fbMat = engine.createObjectMaterial( 0.01, 0, groundMaterial );
     wheelFront.material  = fbMat;
     wheelBack.material   = fbMat;
 
-    // robotBody.material   = fbMat;
+    robotBody.material   = fbMat;
 
     Wheels.push(wheelLeft);
     Wheels.push(wheelRight);
@@ -180,6 +193,11 @@ function buildRobot() {
 
     ConstraintArray[0].setMotorSpeed( 0 );
     ConstraintArray[1].setMotorSpeed( 0 );
+
+    robotBody.angularDamping = 0.1;
+    robotBody.linearDamping = 0.1;
+    robotBody.inertia.set(0.2,0.2,0.2);
+    robotBody.invInertia.set(0.2,0.2,0.2);
 }
 
 
@@ -217,6 +235,9 @@ function callback( arg ) {
 
     if( engine.getKeyDown( 'f', 1000) ) {
         engine.applyForceToRayBody( 1000 );
+    }
+    if( engine.getKeyDown( 'l', 1000) ) {
+        engine.toggleLabels();
     }
 
     if( engine.getKeyDown( 'ArrowUp', 1000) ) {
@@ -307,7 +328,7 @@ WebGui.createButton(btnc3, "Auto", 0, "yellow", ()=>{
 
 import io from "socket.io-client";
 const HOST = "http://localhost";
-const PORT = 3009;
+const PORT = 3005;
 const socket = io( HOST + ":" + PORT );
 
 //!! 
