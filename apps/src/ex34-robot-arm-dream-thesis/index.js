@@ -8,9 +8,7 @@
 
 
 
-import {Engine, SPE} from '../libs/ECC-CGP-Engine';
-import WebGui from '../libs/ECC-Web-Gui';
-
+import {Engine } from '../libs/ECC-CGP-Engine';
 const engine = new Engine({
     graphics:{
         sceneType:"env",
@@ -29,7 +27,6 @@ const engine = new Engine({
         debug:{
             enabled: false
         },
-
     }
 });
 
@@ -92,7 +89,6 @@ function RobotArm( engine, x, y, z ) {
 
     //!! Add to the scene
     engine.getScene().add( this.pivots[0] );
-
 }
 
 RobotArm.prototype.update = function() {
