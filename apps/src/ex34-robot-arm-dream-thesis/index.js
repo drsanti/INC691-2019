@@ -27,6 +27,7 @@ const engine = new Engine({
         debug:{
             enabled: false
         },
+        enabled: false
     }
 });
 
@@ -42,12 +43,13 @@ engine.init( {
 });
 
 
+let Targets = [];
+
 /**
  * RobotArm class
  */
 function RobotArm( engine, x, y, z ) {
 
-    const THREE  = Engine.GRAPHICS;
     this.joints = [];
     this.pivots = [];
     this.alpha  = 0;
@@ -59,36 +61,24 @@ function RobotArm( engine, x, y, z ) {
     parts.push(engine.getMeshByName("J001"));
     parts.push(engine.getMeshByName("J002"));
 
-    for(let i=0; i<parts.length; i++) {
-        parts[i].visible = true;
-        this.joints.push(parts[i].clone());
-        this.pivots.push(new THREE.Object3D());
-        parts[i].visible = false;
-    }
+    const THREE = Engine.GRAPHICS;
 
-    for( let i=0; i<this.pivots.length; i++) {
-        this.pivots[i].add( this.joints[i] );
-        if( i>0 ) {
-            this.joints[i].position.x = 0;
-            this.pivots[i-1].add( this.pivots[i] );
+    //let pv_base = new THREE.Object3D();
+    //pv_base.position.y = 4.2;
+    // parts[3].position.x -= 6;
+    // parts[0].add(parts[1]);
+    // parts[1].add(parts[2]);
+    // parts[2].add(parts[3]);
+    //pv_base.add(parts[1])
 
-        }
-        if( i>1 ) {
-            this.pivots[i].position.x = 6;
-        }
-    }
-    //!! The last one, the tip
-    this.pivots.push(new THREE.Object3D());
+    Targets.push(parts[0]);
+    Targets.push(parts[1]);
+    Targets.push(parts[2]);
+    Targets.push(parts[3]);
 
-    // Position and add to the parent
-    this.pivots[this.pivots.length-1].position.x = 6;
-    this.pivots[this.pivots.length-2].add(this.pivots[this.pivots.length-1]);
 
-    //!! The base position
-    this.pivots[0].position.set( x, y, z );
-
-    //!! Add to the scene
-    engine.getScene().add( this.pivots[0] );
+    // var position = new Engine.GRAPHICS.Vector3();
+    // position.setFromMatrixPosition(Targets[Targets.length-1].matrixWorld );
 }
 
 RobotArm.prototype.update = function() {
@@ -106,9 +96,120 @@ RobotArm.prototype.update = function() {
 let Robot1;
 function userInit() {
     Robot1 = new RobotArm( engine, 0, 0, 0 );
-    engine.getMeshByName("ecclogo").visible = false;
+    //engine.getMeshByName("ecclogo").visible = false;
+
+    window.addEventListener('mousedown', mouseDown);
+    window.addEventListener('mouseup', mouseUp);
+    window.addEventListener('mousemove', mouseMove);
+
+}
+
+
+let Mouse = {
+    down: false,
+    drag: false,
+    x: 0,
+    y: 0,
+    dx: 0,
+    dy: 0
+};
+
+
+function mouseDown(evt) {
+    evt.stopPropagation()
+    evt.preventDefault();
+    Mouse.x = evt.clientX;
+    Mouse.y = evt.clientY;
+    Mouse.down = true;
+
+    performRay();
+}
+function mouseUp(evt) {
+    evt.stopPropagation()
+    evt.preventDefault();
+    Mouse.down = false;
+    Mouse.x = evt.clientX;
+    Mouse.y = evt.clientY;
+}
+function mouseMove(evt) {
+    if( Mouse.down == true && Mouse.drag == true) {
+        evt.stopPropagation()
+        evt.preventDefault();
+        Mouse.dx = Mouse.x - evt.clientX;
+        Mouse.dy = Mouse.y - evt.clientY;
+        doMove(Mouse.dx, Mouse.dy);
+    }
+}
+
+let targetName = null;
+function performRay() {
+    var ints = engine.getRayIntersec();
+
+    // Check & Filter
+    if(ints != null) {
+        var name = ints.object.name;
+        if(name == 'Base' || name == 'J000' || name == 'J001' || name == 'J002') {
+            console.log('Target name: ' + name);
+            targetName = name;
+        } else {
+            targetName = null;
+        }
+    }
+    else {
+        targetName = null;
+    }
+
+    console.log('targetName: ' + targetName);
 }
 
 function callback( arg ) {
-    Robot1.update();
+
+    if(engine.getKeyDown('d', 20)) {
+        Mouse.drag = true;
+        engine.getControl().enabled = false; // Disable control
+    }
+    if(engine.getKeyDown('f', 20)) {
+        Mouse.drag = false;
+        engine.getControl().enabled = true; // Enable control
+    }
+    if(engine.getKeyDown('r', 20)) {
+
+        var ints = engine.getRayIntersec();
+
+        // Check & Filter
+        if(ints != null) {
+            var name = ints.object.name;
+            if(name == 'Base' || name == 'J000' || name == 'J001' || name == 'J002') {
+                console.log('Target name: ' + name);
+            }
+        }
+    }
+}
+
+
+
+function doMove(dx, dy) {
+    console.log(dx, dy);
+
+    let target2move = null;
+
+    if(targetName != null) {
+
+        if(targetName == 'Base') {
+            target2move = Targets[0];
+            target2move.rotation.y = Math.PI * (dy / 1000);
+        }
+        else if(targetName == 'J000') {
+            target2move = Targets[0];
+            target2move.rotation.y = Math.PI * (dy / 1000);
+        }
+        else if(targetName == 'J001') {
+            target2move = Targets[1];
+            target2move.rotation.z = Math.PI * (dy / 1000);
+        }
+        else if(targetName == 'J002') {
+            target2move = Targets[2];
+            target2move.rotation.z = Math.PI * (dy / 1000);
+        }
+    }
 }
