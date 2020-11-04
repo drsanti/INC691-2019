@@ -29,8 +29,8 @@
 // const __exdir__  = 'ex29-racing-car-drive';
 // const __exdir__ = 'ex30-vihicle-loading-driving';
 // const __exdir__ = 'ex31-particles-raycasting'
-const __exdir__ = 'ex34-robot-arm-dream-thesis';
-
+// const __exdir__ = 'ex34-robot-arm-dream-thesis';
+const __exdir__ = 'ex35-robot-arm-dream-thesis-ik';
 
 
 // const __exdir__ = "GameAnimation";

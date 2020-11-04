@@ -36,6 +36,7 @@
     "three-gltf-loader": "^1.108.0",
     "three-subdivision-modifier": "^1.0.5",
     "three.equirectangular-to-cubemap": "^1.1.0",
+    "three.js-projector": "^3.0.6",
     "threejs-orbit-controls": "^1.0.3",
     "websocket": "^1.0.30"
   },
@@ -63,6 +64,6 @@
     "uglify-es": "^3.3.9",
     "webpack": "^4.40.2",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.8.1"
+    "webpack-dev-server": "^3.11.0"
   }
 }
