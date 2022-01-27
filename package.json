@@ -31,7 +31,7 @@
     "cannon": "^0.6.2",
     "image-to-heightmap": "^1.0.0",
     "socket.io-client": "^2.2.0",
-    "three": "^0.99.0",
+    "three": "^0.137.0",
     "three-css2drender": "^1.0.0",
     "three-gltf-loader": "^1.108.0",
     "three-subdivision-modifier": "^1.0.5",
